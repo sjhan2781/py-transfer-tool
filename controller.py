@@ -1,10 +1,12 @@
 import os
 
 from PyQt5.QtCore import QObject
+from PyQt5.QtWidgets import QMessageBox
 from openpyxl import load_workbook
 
 from loadingwidget import LoadingWidget
 from postthread import PostingThread
+from savethread import SavingThread
 from schoolstatus import SchoolStatus
 from start_view import StartView
 from tableWidget import WorkingField
@@ -17,19 +19,19 @@ class StartController(QObject):
     def __init__(self) -> None:
         super().__init__()
 
-        self.loading = LoadingWidget(**{'controller': self,
-                                        'title': '기다려주세요..',
-                                        'internal': self.internal_list,
-                                        'school': self.school_list,
-                                        'external': self.external_list,
-                                        'invited': self.invited_list})
-
         self.internal_list = list()
         self.school_list = list()
         self.external_list = list()
         self.invited_list = list()
         self.priority_list = list()
         self.hash_schools = dict()
+
+        self.designation = list()
+        self.gone = list()
+
+        self.internal_file_url = None
+        self.external_file_url = None
+        self.school_file_url = None
 
         self.post_thread = PostingThread(internal=self.internal_list,
                                          external=self.external_list,
@@ -38,11 +40,52 @@ class StartController(QObject):
                                          invited=self.invited_list,
                                          priority=self.priority_list)
 
+        self.save_thread = SavingThread(internal=self.internal_list,
+                                        external=self.external_list,
+                                        schools=self.school_list,
+                                        hash_schools=self.hash_schools,
+                                        invited=self.invited_list,
+                                        priority=self.priority_list,
+                                        designation=self.designation,
+                                        gone=self.gone,
+                                        internal_file_url=self.internal_file_url,
+                                        external_file_url=self.external_file_url,
+                                        school_file_url=self.school_file_url,
+                                        controller=self)
+
+        self.loading_post = LoadingWidget(**{'controller': self,
+                                        'title': '기다려주세요..',
+                                        'internal': self.internal_list,
+                                        'school': self.school_list,
+                                        'external': self.external_list,
+                                        'invited': self.invited_list})
+        
+        self.loading_save = LoadingWidget(**{'controller': self,
+                                        'title': '저장중입니다..',
+                                        'internal': self.internal_list,
+                                        'school': self.school_list,
+                                        'external': self.external_list,
+                                        'invited': self.invited_list})
+
+        self.init_thread()
+
         self.flag_internal = False
         self.flag_schools = False
         self.flag_external = False
 
+    def init_thread(self):
+        self.post_thread.started.connect(self.loading_post.exec_)
+        self.post_thread.finished.connect(self.loading_post.close)
+        self.post_thread.finished.connect(self.show_next_view)
+
+        self.save_thread.started.connect(self.loading_save.exec_)
+        self.save_thread.finished.connect(self.loading_save.close)
+        # self.save_thread.finished.connect(self.show_next_view)
+
     def get_internal_list(self, file_url):
+        self.internal_list.clear()
+        self.internal_file_url = file_url
+
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
@@ -117,6 +160,8 @@ class StartController(QObject):
             StartView.show_msg_box("성공적으로 불러왔습니다.", False)
 
     def get_school_list(self, file_url):
+        self.school_list.clear()
+        self.school_file_url = file_url
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
@@ -135,6 +180,8 @@ class StartController(QObject):
                 # print('{}'.format(row[51].internal_value))
                 self.school_list.append(SchoolStatus(row[0], row[2], row[51]))
                 self.hash_schools[row[2].value] = row[0].internal_value
+                self.designation.append([])
+                self.gone.append([])
             wb.close()
 
             # except KeyError as e:
@@ -147,10 +194,15 @@ class StartController(QObject):
             self.flag_schools = False
 
         else:
+            # self.designation = [[] for row in range(self.school_list.__len__())]
+            # self.gone = [[] for row in range(self.school_list.__len__())]
             self.flag_schools = True
             StartView.show_msg_box("성공적으로 불러왔습니다.", False)
 
     def get_external_list(self, file_url):
+        self.external_list.clear()
+        self.external_file_url = file_url
+
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
@@ -191,7 +243,6 @@ class StartController(QObject):
             StartView.show_msg_box("성공적으로 불러왔습니다.", False)
 
     def is_valid(self):
-
         if self.flag_internal and self.flag_external and self.flag_schools:
             return True
 
@@ -215,8 +266,8 @@ class StartController(QObject):
 
             return False
 
-    def start(self):
-        self.loading.start()
+    def start_program(self):
+        self.post_thread.start()
 
     def show_next_view(self):
         print('internal {} school {} external {}'
@@ -225,4 +276,37 @@ class StartController(QObject):
                              external=self.external_list,
                              schools=self.school_list,
                              invited=self.invited_list,
-                             priority=self.priority_list)
+                             hash_school=self.hash_schools,
+                             designation=self.designation,
+                             gone=self.gone,
+                             priority=self.priority_list,
+                             controller=self)
+
+    def save(self, file_url):
+        self.save_thread.internal_file_url = self.internal_file_url
+        self.save_thread.external_file_url = self.external_file_url
+        self.save_thread.school_file_url = self.school_file_url
+        self.save_thread.result_file_url = file_url
+        self.save_thread.start()
+
+    def print_state(self):
+        for t in self.internal_list:
+            print(t)
+
+        for t in self.external_list:
+            print(t)
+
+    def show_msg_box(self):
+        msg_box = QMessageBox()
+
+        if self.save_thread.is_error:
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setText('저장 중에 문제가 발생했습니다.\n' + self.save_thread.msg)
+        else:
+            msg_box.setIcon(QMessageBox.NoIcon)
+            msg_box.setText('저장되었습니다.')
+
+        msg_box.setWindowTitle("")
+        # msg_box.setText(self.save_thread.msg)
+        msg_box.setStandardButtons(QMessageBox.Ok)
+        result = msg_box.exec_()

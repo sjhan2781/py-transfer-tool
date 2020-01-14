@@ -14,10 +14,10 @@
    <bool>true</bool>
   </property>
   <property name="focusPolicy">
-   <enum>Qt::WheelFocus</enum>
+   <enum>Qt::NoFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>배치</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="3,0,3">
    <property name="spacing">
@@ -112,6 +112,9 @@
        </property>
        <item>
         <widget class="QTableWidget" name="tableWidget_internal">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="sizeAdjustPolicy">
           <enum>QAbstractScrollArea::AdjustIgnored</enum>
          </property>
@@ -123,6 +126,9 @@
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
@@ -140,7 +146,7 @@
           <bool>true</bool>
          </property>
          <property name="columnCount">
-          <number>14</number>
+          <number>11</number>
          </property>
          <attribute name="horizontalHeaderCascadingSectionResizes">
           <bool>true</bool>
@@ -171,22 +177,12 @@
          </column>
          <column>
           <property name="text">
-           <string>주민등록번호</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
            <string>성별</string>
           </property>
          </column>
          <column>
           <property name="text">
            <string>급지</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>발령일</string>
           </property>
          </column>
          <column>
@@ -217,11 +213,6 @@
          <column>
           <property name="text">
            <string>비고</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>id</string>
           </property>
          </column>
         </widget>

@@ -10,6 +10,9 @@
     <height>625</height>
    </rect>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -98,11 +101,6 @@
      <column>
       <property name="text">
        <string>비고</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>id</string>
       </property>
      </column>
     </widget>
