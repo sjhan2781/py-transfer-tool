@@ -84,6 +84,7 @@ class StartController(QObject):
 
     def get_internal_list(self, file_url):
         self.internal_list.clear()
+        self.invited_list.clear()
         self.internal_file_url = file_url
 
         fname, ext = os.path.splitext(file_url)
@@ -114,6 +115,7 @@ class StartController(QObject):
                     self.internal_list.append(t)
                 i += 1
 
+            i = 0
             ws = wb['초빙']
 
             for row in ws.iter_rows(min_row=6):
@@ -130,6 +132,7 @@ class StartController(QObject):
 
             ws = wb['비정기']
 
+            i = 0
             for row in ws.iter_rows(min_row=6):
                 if row[0].value is None:
                     break
@@ -143,7 +146,7 @@ class StartController(QObject):
                 i += 1
 
             self.internal_list.sort()
-
+            print('intenal size = {}'.format(self.internal_list.__len__()))
             wb.close()
 
         # except KeyError as e:
@@ -182,6 +185,8 @@ class StartController(QObject):
                 self.hash_schools[row[2].value] = row[0].internal_value
                 self.designation.append([])
                 self.gone.append([])
+
+            print('get school {}'.format(self.school_list.__len__()))
             wb.close()
 
             # except KeyError as e:

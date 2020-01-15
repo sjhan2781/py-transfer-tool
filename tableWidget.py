@@ -26,7 +26,7 @@ class WorkingField(QtWidgets.QWidget):
         self.set_up_ui()
 
         # self.ui.show()
-        self.showFullScreen()
+        self.showMaximized()
 
     @pyqtSlot()
     def add(self):
@@ -70,7 +70,7 @@ class WorkingField(QtWidgets.QWidget):
 
                 selected_row = tableWidget.currentRow()
 
-                teacher = tableWidget.item(selected_row, 23).data(Qt.UserRole)
+                teacher = tableWidget.item(selected_row, 4).data(Qt.UserRole)
 
                 t = None
                 for tmp in self.teachers_external:
@@ -234,7 +234,6 @@ class WorkingField(QtWidgets.QWidget):
         self.ui.tableWidget_external.setItem(i, 20, widget_items.StringItem(teacher.email))
         self.ui.tableWidget_external.setItem(i, 21, widget_items.StringItem(teacher.vehicle))
         self.ui.tableWidget_external.setItem(i, 22, widget_items.StringItem(teacher.remarks))
-        self.ui.tableWidget_external.setItem(i, 23, widget_items.CustomItem(teacher))
         # 내용에 맞춰 셀 크기 자동 조정
         # self.ui.tableWidget_external.resizeColumnsToContents()
         # self.ui.tableWidget_external.resizeRowsToContents()
