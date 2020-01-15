@@ -453,7 +453,7 @@
       </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
        <property name="leftMargin">
         <number>10</number>
        </property>
@@ -461,12 +461,26 @@
         <number>10</number>
        </property>
        <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>전입자</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>전출자</string>
          </property>
         </widget>
        </item>

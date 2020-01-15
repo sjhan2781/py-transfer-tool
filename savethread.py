@@ -84,7 +84,11 @@ class SavingThread(QtCore.QThread):
             ws['AE4'].alignment = alignment
 
             for i in range(0, self.internal.__len__()):
-                cell = ws.cell(row=i + 6, column=31, value=self.internal[i].disposed)
+                if self.internal[i].disposed is None:
+                    disposed = ''
+                else:
+                    disposed = self.internal[i].disposed
+                cell = ws.cell(row=self.internal[i].id + 6, column=31, value=disposed)
                 cell.font = fontStyle
                 cell.alignment = alignment
 
@@ -114,7 +118,11 @@ class SavingThread(QtCore.QThread):
             fontStyle = Font(size="8")
 
             for i in range(0, self.external.__len__()):
-                cell = ws.cell(row=i + 3, column=11, value=self.external[i].disposed)
+                if self.external[i].disposed is None:
+                    disposed = ''
+                else:
+                    disposed = self.external[i].disposed
+                cell = ws.cell(row=i + 3, column=11, value=disposed)
                 cell.font = fontStyle
 
             wb.close()

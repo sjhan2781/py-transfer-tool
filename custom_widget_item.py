@@ -34,7 +34,7 @@ class CustomItem(QTableWidgetItem):
         self.updateValue(value)
 
     def __lt__(self, other):
-        return self.data(Qt.UserRole) < other.data(Qt.UserRole)
+        return self.data(Qt.UserRole).name < other.data(Qt.UserRole).name
 
     def updateValue(self, value):
         self.setData(Qt.UserRole, value)

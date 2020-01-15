@@ -141,9 +141,16 @@ class WorkingField(QtWidgets.QWidget):
 
     @pyqtSlot()
     def save(self):
-        filename = QFileDialog.getSaveFileName(self, "Save file", "", ".xlsx")
+        try:
+            filename = QFileDialog.getSaveFileName(self, "Save file", "", ".xlsx")
 
-        self.controller.save(filename[0] + '.xlsx')
+            print(filename)
+
+            if filename[0] != '':
+                self.controller.save(filename[0] + '.xlsx')
+
+        except Exception as e:
+            print(e)
         # controller.save_file(self, self.designation, self.schools, self.teachers_internal, self.teachers_external)
 
     def set_up_ui(self):
