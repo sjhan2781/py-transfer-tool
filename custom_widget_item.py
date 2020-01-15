@@ -8,6 +8,13 @@ class StringItem(QTableWidgetItem):
         super().__init__()
         self.setText(value)
         self.setTextAlignment(Qt.AlignCenter)
+        self.updateValue(value)
+
+    def __lt__(self, other):
+        return self.data(Qt.UserRole) < other.data(Qt.UserRole)
+
+    def updateValue(self, value):
+        self.setData(Qt.UserRole, value)
 
 
 class NumericItem(QTableWidgetItem):

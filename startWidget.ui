@@ -42,6 +42,9 @@
        <pointsize>24</pointsize>
       </font>
      </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="styleSheet">
       <string notr="true">QPushButton{
 	background-color: rgb(253, 110, 115);
@@ -101,6 +104,9 @@ QPushButton:pressed{
          <pointsize>24</pointsize>
         </font>
        </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
        <property name="styleSheet">
         <string notr="true">QPushButton{
 	background-color:rgb(102, 147, 255);
@@ -133,6 +139,9 @@ QPushButton:pressed{
          <family>맑은 고딕</family>
          <pointsize>24</pointsize>
         </font>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="autoFillBackground">
         <bool>false</bool>
@@ -172,6 +181,9 @@ QPushButton:pressed{
          <family>맑은 고딕</family>
          <pointsize>24</pointsize>
         </font>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
        </property>
        <property name="autoFillBackground">
         <bool>false</bool>

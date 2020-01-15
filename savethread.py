@@ -31,7 +31,7 @@ class SavingThread(QtCore.QThread):
         self.is_error = False
         self.msg = ''
 
-        self.finished.connect(self.controller.show_msg_box)
+        # self.finished.connect(self.controller.show_msg_box)
 
     def run(self) -> None:
         self.save()
@@ -39,9 +39,6 @@ class SavingThread(QtCore.QThread):
     def save(self):
         self.is_error = False
         self.msg = ''
-
-        print('save internal {}'.format(self.internal.__len__()))
-        print('save school {}'.format(self.schools.__len__()))
 
         t1 = Thread(target=self.save_internal)
         t2 = Thread(target=self.save_schools)
@@ -73,9 +70,6 @@ class SavingThread(QtCore.QThread):
 
             if 'xlsm' in ext:
                 has_macro = True
-            print('internal={}'.format(self.internal.__len__()))
-
-            print(self.internal_file_url)
 
             wb = load_workbook(filename=self.internal_file_url)
             ws = [wb['초등(학교별)'], wb['비정기']]
@@ -92,7 +86,6 @@ class SavingThread(QtCore.QThread):
                 ws[i]['AE4'].alignment = alignment
 
             for i in range(0, self.internal.__len__()):
-                print('{}'.format(i))
                 if '비정기' in self.internal[i].type:
                     index = 1
                 else:
@@ -103,6 +96,15 @@ class SavingThread(QtCore.QThread):
                 else:
                     disposed = self.internal[i].disposed
                 cell = ws[index].cell(row=self.internal[i].id + 6, column=31, value=disposed)
+                cell.font = fontStyle
+                cell.alignment = alignment
+
+            for i in range(0, self.invited.__len__()):
+                if self.invited[i].disposed is None:
+                    disposed = ''
+                else:
+                    disposed = self.invited[i].disposed
+                cell = ws_invited.cell(row=self.invited[i].id + 6, column=31, value=disposed)
                 cell.font = fontStyle
                 cell.alignment = alignment
 
@@ -163,7 +165,6 @@ class SavingThread(QtCore.QThread):
             ws = wb['결충원']
 
             fontStyle = Font(size="8")
-            print('school{}'.format(self.schools.__len__()))
 
             for i in range(0, self.schools.__len__()):
                 cell = ws.cell(row=i + 8, column=53, value=self.schools[i].gone)
@@ -254,7 +255,12 @@ class SavingThread(QtCore.QThread):
             if teacher.disposed is None:
                 continue
 
-            a = sheet.cell(row=row, column=1, value='관내')
+            if '타시군' in teacher.type:
+                value = '타시군전입'
+            else:
+                value = '관내'
+
+            a = sheet.cell(row=row, column=1, value=value)
             a.alignment = Alignment(horizontal='center')
             a.font = fontStyle
 

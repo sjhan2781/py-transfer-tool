@@ -146,7 +146,6 @@ class StartController(QObject):
                 i += 1
 
             self.internal_list.sort()
-            print('intenal size = {}'.format(self.internal_list.__len__()))
             wb.close()
 
         # except KeyError as e:
@@ -186,7 +185,6 @@ class StartController(QObject):
                 self.designation.append([])
                 self.gone.append([])
 
-            print('get school {}'.format(self.school_list.__len__()))
             wb.close()
 
             # except KeyError as e:

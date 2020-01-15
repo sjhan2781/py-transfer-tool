@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>943</width>
-    <height>623</height>
+    <width>1186</width>
+    <height>702</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -25,15 +25,37 @@
    </property>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <pointsize>24</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>미지정 교사</string>
      </property>
     </widget>
    </item>
    <item row="0" column="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="8,0,1,0,0,1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,8,0,1,0,0,1">
+     <item>
+      <widget class="QLabel" name="label_school_name">
+       <property name="font">
+        <font>
+         <pointsize>24</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>학교명</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QLabel" name="label_4">
+       <property name="font">
+        <font>
+         <pointsize>24</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>관내 전보:</string>
        </property>
@@ -44,6 +66,11 @@
      </item>
      <item>
       <widget class="QLabel" name="label_inside">
+       <property name="font">
+        <font>
+         <pointsize>24</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>0</string>
        </property>
@@ -54,6 +81,11 @@
      </item>
      <item>
       <widget class="QLabel" name="label_6">
+       <property name="font">
+        <font>
+         <pointsize>24</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>명</string>
        </property>
@@ -61,6 +93,11 @@
      </item>
      <item>
       <widget class="QLabel" name="label_2">
+       <property name="font">
+        <font>
+         <pointsize>24</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>관외 전보:</string>
        </property>
@@ -71,6 +108,11 @@
      </item>
      <item>
       <widget class="QLabel" name="label_outside">
+       <property name="font">
+        <font>
+         <pointsize>24</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>0</string>
        </property>
@@ -78,6 +120,11 @@
      </item>
      <item>
       <widget class="QLabel" name="label_5">
+       <property name="font">
+        <font>
+         <pointsize>24</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>명</string>
        </property>
@@ -87,8 +134,11 @@
    </item>
    <item row="1" column="0">
     <widget class="QTabWidget" name="unspecified_tabWidget">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -114,6 +164,28 @@
         <widget class="QTableWidget" name="tableWidget_internal">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QHeaderView::section{
+	background-color	: rgb(106, 154, 62);
+	color: white;
+}
+
+QTableWidget{
+	background:rgb(255, 255, 255);
+	alternate-background-color:rgb(224, 238, 210);
+	selection-background-color:transparent;
+	show-decoration-selected:10;
+}
+
+QTableWidget::item:selected {
+	background-color: rgb(37, 114, 71);
+	color: white;
+	border: 2px solid rgb(37, 114, 71);
+}</string>
          </property>
          <property name="sizeAdjustPolicy">
           <enum>QAbstractScrollArea::AdjustIgnored</enum>
@@ -145,10 +217,22 @@
          <property name="wordWrap">
           <bool>true</bool>
          </property>
+         <property name="cornerButtonEnabled">
+          <bool>false</bool>
+         </property>
+         <property name="rowCount">
+          <number>4</number>
+         </property>
          <property name="columnCount">
           <number>11</number>
          </property>
          <attribute name="horizontalHeaderCascadingSectionResizes">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderHighlightSections">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
           <bool>true</bool>
          </attribute>
          <attribute name="horizontalHeaderStretchLastSection">
@@ -160,6 +244,10 @@
          <attribute name="verticalHeaderHighlightSections">
           <bool>false</bool>
          </attribute>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
          <column>
           <property name="text">
            <string>전보유형</string>
@@ -238,6 +326,28 @@
        </property>
        <item>
         <widget class="QTableWidget" name="tableWidget_external">
+         <property name="styleSheet">
+          <string notr="true">QHeaderView::section{
+	background-color	: rgb(57, 135, 144);
+	color: white;
+}
+
+QTableWidget{
+	background:rgb(255, 255, 255);
+	alternate-background-color:rgb(209, 235, 238);
+	selection-background-color:transparent;
+	show-decoration-selected:10;
+}
+
+QTableWidget::item:selected {
+	background-color: rgb(99, 186, 194);
+	color: white;
+	border: 2px solid rgb(99, 186, 194)
+}</string>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
          </property>
@@ -252,6 +362,9 @@
          </property>
          <attribute name="horizontalHeaderCascadingSectionResizes">
           <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderHighlightSections">
+          <bool>false</bool>
          </attribute>
          <attribute name="verticalHeaderVisible">
           <bool>false</bool>
@@ -374,11 +487,6 @@
            <string>비고</string>
           </property>
          </column>
-         <column>
-          <property name="text">
-           <string>id</string>
-          </property>
-         </column>
         </widget>
        </item>
       </layout>
@@ -462,6 +570,16 @@
        </property>
        <item>
         <widget class="QLabel" name="label_3">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel{
+	color: rgb(37, 74, 133);
+}</string>
+         </property>
          <property name="text">
           <string>전입자</string>
          </property>
@@ -479,6 +597,16 @@
        </item>
        <item>
         <widget class="QLabel" name="label_7">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel{
+	color: rgb(185, 60, 65)
+}</string>
+         </property>
          <property name="text">
           <string>전출자</string>
          </property>
@@ -500,6 +628,9 @@
    </item>
    <item row="2" column="2">
     <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
      </property>
@@ -516,8 +647,8 @@
    <slot>add()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>513</x>
-     <y>231</y>
+     <x>635</x>
+     <y>267</y>
     </hint>
     <hint type="destinationlabel">
      <x>423</x>
@@ -532,8 +663,8 @@
    <slot>delete()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>513</x>
-     <y>423</y>
+     <x>635</x>
+     <y>480</y>
     </hint>
     <hint type="destinationlabel">
      <x>445</x>
@@ -548,8 +679,8 @@
    <slot>tabChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>557</x>
-     <y>395</y>
+     <x>770</x>
+     <y>449</y>
     </hint>
     <hint type="destinationlabel">
      <x>636</x>
@@ -564,8 +695,8 @@
    <slot>save()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>936</x>
-     <y>618</y>
+     <x>1179</x>
+     <y>697</y>
     </hint>
     <hint type="destinationlabel">
      <x>445</x>
@@ -580,12 +711,12 @@
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>618</x>
-     <y>158</y>
+     <x>770</x>
+     <y>212</y>
     </hint>
     <hint type="destinationlabel">
-     <x>777</x>
-     <y>102</y>
+     <x>1162</x>
+     <y>198</y>
     </hint>
    </hints>
   </connection>
@@ -596,12 +727,12 @@
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>574</x>
-     <y>414</y>
+     <x>770</x>
+     <y>468</y>
     </hint>
     <hint type="destinationlabel">
-     <x>685</x>
-     <y>424</y>
+     <x>1162</x>
+     <y>663</y>
     </hint>
    </hints>
   </connection>

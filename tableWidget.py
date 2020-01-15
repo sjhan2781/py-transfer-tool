@@ -3,10 +3,12 @@ import custom_widget_item as widget_items
 import controller
 
 from PyQt5.QtCore import pyqtSlot, Qt
-from PyQt5.QtWidgets import QTableWidgetItem, QListWidgetItem, QMessageBox, QFileDialog
+from PyQt5.QtWidgets import QTableWidgetItem, QListWidgetItem, QMessageBox, QFileDialog, QAbstractItemView
 from PyQt5 import QtWidgets, uic
 
-from schooltable import SchoolTable
+from schooltable_coming import SchoolTableComing
+from schooltable_gone import SchoolTableGone
+from teacher_external import TeacherExternal
 
 
 class WorkingField(QtWidgets.QWidget):
@@ -41,27 +43,21 @@ class WorkingField(QtWidgets.QWidget):
 
                 teacher = self.ui.tableWidget_internal.item(selected_row, 2).data(Qt.UserRole)
 
-                t = None
-                for tmp in self.teachers_internal[:]:
-                    if teacher == tmp:
-                        t = tmp
-                        break
+                teacher.disposed = self.schools[selected_tab].name
 
-                t.disposed = self.schools[selected_tab].name
+                gone_widget = self.ui.stackedWidget_gone.widget(self.hash_schools.get(teacher.school)-1)
+                gone_widget.add_item(teacher)
 
-                gone_widget = self.ui.stackedWidget_gone.widget(self.hash_schools.get(t.school)-1)
-                gone_widget.add_item(t)
-
-                if '만기' not in t.type:
-                    self.schools[self.hash_schools.get(t.school) - 1].gone += 1
+                if '만기' not in teacher.type or '비정기' not in teacher.type:
+                    self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
 
                 self.schools[selected_tab].inside += 1
                 self.tabChanged(selected_tab)
-                self.tabChanged(self.hash_schools.get(t.school) - 1)
-                # self.teachers_internal.remove(t)
+                self.tabChanged(self.hash_schools.get(teacher.school) - 1)
+                # self.teachers_internal.remove(teacher)
 
                 tableWidget.removeRow(selected_row)
-                cur_widget.add_item(t)
+                cur_widget.add_item(teacher)
                 tableWidget.clearSelection()
 
         else:
@@ -72,18 +68,12 @@ class WorkingField(QtWidgets.QWidget):
 
                 teacher = tableWidget.item(selected_row, 4).data(Qt.UserRole)
 
-                t = None
-                for tmp in self.teachers_external:
-                    if teacher == tmp:
-                        t = tmp
-                        break
-
                 cur_widget = self.ui.stackedWidget.currentWidget()
-                t.disposed = self.schools[selected_tab].name
+                teacher.disposed = self.schools[selected_tab].name
                 self.schools[selected_tab].outside += 1
 
                 tableWidget.removeRow(selected_row)
-                cur_widget.add_item(t)
+                cur_widget.add_item(teacher)
                 tableWidget.clearSelection()
 
         self.tabChanged(selected_tab)
@@ -96,18 +86,14 @@ class WorkingField(QtWidgets.QWidget):
             teacher = cur_widget.pop(cur_widget.designedTableWidget.currentRow())
             selected_tab = self.ui.schoolListWidget.currentRow()
 
-            if '타시군' in teacher.type:
-                index = self.ui.tableWidget_external.rowCount()
-                self.ui.tableWidget_external.insertRow(index)
-                self.set_external_row(index, teacher)
-                self.teachers_external.append(teacher)
+            if isinstance(teacher, TeacherExternal):
+                self.set_external_row(teacher)
+                # self.teachers_external.append(teacher)
                 self.schools[selected_tab].outside -= 1
 
             else:
-                index = self.ui.tableWidget_internal.rowCount()
-                self.ui.tableWidget_internal.insertRow(index)
-                self.set_internal_row(index, teacher)
-                self.teachers_internal.append(teacher)
+                self.set_internal_row(teacher)
+                # self.teachers_internal.append(teacher)
                 self.schools[selected_tab].inside -= 1
 
                 school_num = self.hash_schools.get(teacher.school) - 1
@@ -115,7 +101,7 @@ class WorkingField(QtWidgets.QWidget):
                 gone_widget = self.ui.stackedWidget_gone.widget(school_num)
                 gone_table_widget = gone_widget.ui.designedTableWidget
 
-                items = gone_table_widget.findItems('{}'.format(teacher.name), Qt.MatchExactly)
+                items = gone_table_widget.findItems(teacher.name, Qt.MatchExactly)
 
                 for item in items:
                     tmp = item.data(Qt.UserRole)
@@ -123,7 +109,7 @@ class WorkingField(QtWidgets.QWidget):
                         gone_widget.pop(item.row())
                         break
 
-                if '만기' not in teacher.type:
+                if '만기' not in teacher.type or '비정기' not in teacher.type:
                     self.schools[self.hash_schools.get(teacher.school)-1].gone -= 1
                 self.tabChanged(self.hash_schools.get(teacher.school)-1)
 
@@ -133,6 +119,7 @@ class WorkingField(QtWidgets.QWidget):
 
     @pyqtSlot(int)
     def tabChanged(self, index):
+        self.ui.label_school_name.setText(self.schools[index].name)
         item = self.ui.schoolListWidget.item(index)
         item.setText('%s (%d)' % (self.schools[index].name, self.schools[index].get_state()))
         self.ui.label_inside.setText('%d' % self.schools[index].inside)
@@ -142,7 +129,7 @@ class WorkingField(QtWidgets.QWidget):
     @pyqtSlot()
     def save(self):
         try:
-            filename = QFileDialog.getSaveFileName(self, "Save file", "", ".xlsx")
+            filename = QFileDialog.getSaveFileName(self, "Save file", "", "Excel (*.xlsx, *xlsm)")
 
             print(filename)
 
@@ -155,17 +142,19 @@ class WorkingField(QtWidgets.QWidget):
 
     def set_up_ui(self):
 
-        for t in self.teachers_internal[:]:
+        for t in self.teachers_internal:
             if t.disposed is not None:
                 self.designation[self.hash_schools.get(t.disposed) - 1].append(t)
                 self.gone[self.hash_schools.get(t.school)-1].append(t)
-                self.teachers_internal.remove(t)
+        #         self.teachers_internal.remove(t)
+        #
+        # print()
 
         for i in range(0, self.schools.__len__()):
             self.ui.schoolListWidget.addItem(QListWidgetItem('%s (%d)' % (self.schools[i].name,
                                                                           self.schools[i].get_state())))
-            self.ui.stackedWidget.addWidget(SchoolTable(self.designation[i], parent=self))
-            self.ui.stackedWidget_gone.addWidget(SchoolTable(self.gone[i], parent=self))
+            self.ui.stackedWidget.addWidget(SchoolTableComing(self.designation[i], parent=self))
+            self.ui.stackedWidget_gone.addWidget(SchoolTableGone(self.gone[i], parent=self))
 
         self.add_internal_table_items()
         self.add_external_table_items()
@@ -189,7 +178,10 @@ class WorkingField(QtWidgets.QWidget):
 
         self.ui.unspecified_tabWidget.setCurrentIndex(0)
 
-    def set_internal_row(self, i, teacher):
+    def set_internal_row(self, teacher):
+        self.ui.tableWidget_internal.setSortingEnabled(False)
+        i = self.ui.tableWidget_internal.rowCount()
+        self.ui.tableWidget_internal.insertRow(i)
         self.ui.tableWidget_internal.setItem(i, 0, widget_items.StringItem(teacher.type))
         self.ui.tableWidget_internal.setItem(i, 1, widget_items.StringItem(teacher.school))
         self.ui.tableWidget_internal.setItem(i, 2, widget_items.CustomItem(teacher))
@@ -201,7 +193,8 @@ class WorkingField(QtWidgets.QWidget):
         self.ui.tableWidget_internal.setItem(i, 8, widget_items.StringItem(teacher.second))
         self.ui.tableWidget_internal.setItem(i, 9, widget_items.StringItem(teacher.third))
         self.ui.tableWidget_internal.setItem(i, 10, widget_items.StringItem(teacher.remarks))
-        self.ui.tableWidget_internal.setItem(i, 11, widget_items.CustomItem(teacher))
+
+        self.ui.tableWidget_internal.setSortingEnabled(True)
 
         # 내용에 맞춰 셀 크기 자동 조정
         # self.ui.tableWidget_internal.resizeColumnsToContents()
@@ -210,7 +203,13 @@ class WorkingField(QtWidgets.QWidget):
         # # 수정 금지
         # self.ui.tableWidget_internal.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-    def set_external_row(self, i, teacher):
+    def set_external_row(self, teacher):
+        self.ui.tableWidget_external.setSortingEnabled(False)
+
+        i = self.ui.tableWidget_external.rowCount()
+        self.ui.tableWidget_external.insertRow(i)
+        print(type(teacher))
+        print('set {}'.format(teacher))
         self.ui.tableWidget_external.setItem(i, 0, widget_items.StringItem(teacher.type))
         self.ui.tableWidget_external.setItem(i, 1, widget_items.StringItem(teacher.region))
         self.ui.tableWidget_external.setItem(i, 2, widget_items.StringItem(teacher.school))
@@ -234,6 +233,9 @@ class WorkingField(QtWidgets.QWidget):
         self.ui.tableWidget_external.setItem(i, 20, widget_items.StringItem(teacher.email))
         self.ui.tableWidget_external.setItem(i, 21, widget_items.StringItem(teacher.vehicle))
         self.ui.tableWidget_external.setItem(i, 22, widget_items.StringItem(teacher.remarks))
+
+        self.ui.tableWidget_external.setSortingEnabled(True)
+
         # 내용에 맞춰 셀 크기 자동 조정
         # self.ui.tableWidget_external.resizeColumnsToContents()
         # self.ui.tableWidget_external.resizeRowsToContents()
@@ -242,36 +244,31 @@ class WorkingField(QtWidgets.QWidget):
         # self.ui.tableWidget_external.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def add_internal_table_items(self):
-        self.ui.tableWidget_internal.setRowCount(self.teachers_internal.__len__())
+        self.ui.tableWidget_internal.setRowCount(0)
 
         print('{}'.format(self.teachers_internal.__len__()))
-        for i in range(0, self.teachers_internal.__len__()):
-            # tmp = teachers_internal[i]
-            self.set_internal_row(i, self.teachers_internal[i])
+        i = 0
+        for teacher in self.teachers_internal:
+            print('aasdasdadsasd')
+            if teacher.disposed is None:
+                self.set_internal_row(teacher)
+                i += 1
 
         # # 내용에 맞춰 셀 크기 자동 조정
         # self.ui.tableWidget.resizeColumnsToContents()
         # self.ui.tableWidget.resizeRowsToContents()
         #
         # # 수정 금지
-        # self.ui.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def add_external_table_items(self):
-        self.ui.tableWidget_external.setRowCount(self.teachers_external.__len__())
+        self.ui.tableWidget_external.setRowCount(0)
+        # self.ui.tableWidget_external.setRowCount(self.teachers_external.__len__())
 
-        for i in range(0, self.teachers_external.__len__()):
-            # tmp = teachers_internal[i]
-            self.set_external_row(i, self.teachers_external[i])
-
-    def focusTo(self, teacher, widget_focus_on):
-        items = widget_focus_on.findItems('{}'.format(teacher.name), Qt.MatchExactly)
-
-        for item in items:
-            t = item.data(Qt.UserRole)
-            if t == teacher:
-                widget_focus_on.setCurrentItem(item)
-                widget_focus_on.setFocus()
-                break
+        i = 0
+        for teacher in self.teachers_external:
+            if teacher.disposed is None:
+                self.set_external_row(teacher)
+                i += 1
 
     def moveTo(self, teacher):
         school_num = self.hash_schools.get(teacher.disposed)-1
