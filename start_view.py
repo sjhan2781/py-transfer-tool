@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog
 
 
 class StartView(QtWidgets.QWidget):
-    def __init__(self, controller):
+    def __init__(self, controller, parent=None):
         super().__init__()
 
         self.controller = controller
@@ -43,14 +43,8 @@ class StartView(QtWidgets.QWidget):
 
     @pyqtSlot()
     def start(self):
-        # msg = self.controller.is_valid()
-
         if self.controller.is_valid():
-            # self.loading.start()
-            # self.gui_thread.start()
-            # self.gui_thread.wait()
             self.controller.start_program()
-            # self.show_next_view()
             self.close()
         print('start')
 

@@ -1,60 +1,61 @@
-import datetime
-
-
 class TeacherExternal:
-    def __init__(self, id, rank, type, region, school, position, name, birth, sex, career, major,
-                 first, second, third, ab_type, ab_start, ab_end, related_school, relation, relation_name,
-                 address, phone, email, vehicle, remarks):
-        self.id = id
-        self.rank = rank.value
-        self.type = type
-        self.region = region.value
-        self.position = position.value
-        self.school = school.value
-        self.name = name.value
-        self.birth = birth.value
-        self.sex = sex.value
-        self.career = career.value
+    def __init__(self, **kwargs):
+        self.id = kwargs['id']
+        self.rank = kwargs['rank'].value
+        self.type = kwargs['type']
+        self.region = kwargs['region'].value
+        self.position = kwargs['position'].value
+        self.school = kwargs['school'].value
+        self.name = kwargs['name'].value
+        self.birth = kwargs['birth'].value
+        self.sex = kwargs['sex'].value
+        self.career = kwargs['career'].value
 
-        if isinstance(major.value, str):
-            self.major = major.value
+        if isinstance(kwargs['major'].value, str):
+            self.major = kwargs['major'].value
         else:
             self.major = None
 
-        if first.value == 0:
+        if kwargs['first'].value == 0:
             self.first = None
         else:
-            self.first = first.value
+            self.first = kwargs['first'].value
 
-        if second.value == 0:
+        if kwargs['second'].value == 0:
             self.second = None
         else:
-            self.second = second.value
+            self.second = kwargs['second'].value
 
-        if third.value == 0:
+        if kwargs['third'].value == 0:
             self.third = None
         else:
-            self.third = third.value
+            self.third = kwargs['third'].value
 
-        self.ab_type = ab_type.value
-        self.ab_start = ab_start.value
-        self.ab_end = ab_end.value
-        self.related_school = related_school.value
-        self.relation = relation.value
-        self.relation_name = relation_name.value
-        self.address = address.value
-        self.phone = phone.value
-        self.email = email.value
-        self.vehicle = vehicle.value
-        self.remarks = remarks.value
+        self.ab_type = kwargs['ab_type'].value
+        self.ab_start = kwargs['ab_start'].value
+        self.ab_end = kwargs['ab_end'].value
+        self.related_school = kwargs['related_school'] .value
+        self.relation = kwargs['relation'].value
+        self.relation_person = kwargs['relation_person'].value
+        self.address = kwargs['address'].value
+        self.phone = kwargs['phone'].value
+        self.email = kwargs['email'].value
+        self.vehicle = kwargs['vehicle'].value
+        self.remarks = kwargs['remarks'].value
         self.disposed = None
-
+        # self.disposed = kwargs['disposed'].value
 
     def __str__(self) -> str:
-        return 'id = %3d 이름 = %4s 전보유형 = %2s 1지망 = %5s 2지망 = %5s 3지망 = %5s 배정교 = %s' % (self.id,
-                                                                                                     self.name,
-                                                                                                     self.type,
-                                                                                                     self.first,
-                                                                                                     self.second,
-                                                                                                     self.third,
-                                                                                                     self.disposed)
+        return '이름 = %-5s //  지역 = %s  //  성별 = %-3s//\n' \
+               '생년월일 = %s  //  교육총경력 = %s\n' \
+               '1지망 = %-5s  //  2지망 = %-5s //  3지망 = %-5s\n' \
+               '휴직 종류 = %s  // 시작일 = %s  //  종료일 = %s\n' \
+               '친인척 학교명 = %s  //  관계 = %s  //  성명  = %s\n' \
+               '주소 = %s\n' \
+               '비고 = %s' % (self.name, self.region, self.sex,
+                            self.birth, self.career,
+                            self.first, self.second, self.third,
+                            self.ab_type, self.ab_start, self.ab_end,
+                            self.related_school, self.relation, self.relation_person,
+                            self.address,
+                            self.remarks)

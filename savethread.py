@@ -1,4 +1,5 @@
 import os
+import time
 from threading import Thread
 
 import openpyxl
@@ -35,6 +36,20 @@ class SavingThread(QtCore.QThread):
 
     def run(self) -> None:
         self.save()
+        # t1 = Thread(target=self.save_internal)
+        # t2 = Thread(target=self.save_schools)
+        # t3 = Thread(target=self.save_external)
+        # t4 = Thread(target=self.make_result_file)
+        #
+        # t1.start()
+        # t2.start()
+        # t3.start()
+        # t4.start()
+        #
+        # t1.join()
+        # t2.join()
+        # t3.join()
+        # t4.join()
 
     def save(self):
         self.is_error = False
@@ -55,13 +70,6 @@ class SavingThread(QtCore.QThread):
         t3.join()
         t4.join()
 
-        # self.save_internal()
-        # self.save_schools()
-        # self.save_external()
-        # self.make_result_file()
-
-        # self.show_msg_box()
-
     def save_internal(self):
         try:
             fname, ext = os.path.splitext(self.internal_file_url)
@@ -71,7 +79,7 @@ class SavingThread(QtCore.QThread):
             if 'xlsm' in ext:
                 has_macro = True
 
-            wb = load_workbook(filename=self.internal_file_url)
+            wb = load_workbook(filename=self.internal_file_url, keep_vba=has_macro)
             ws = [wb['초등(학교별)'], wb['비정기']]
             ws_invited = wb['초빙']
 
@@ -79,7 +87,7 @@ class SavingThread(QtCore.QThread):
             alignment = Alignment(horizontal='center', vertical='center')
 
             for i in range(0, ws.__len__()):
-                ws[i].merge_cells('AE4:AE5')
+                ws[i].merge_cells('AD4:AD5')
                 ws[i]['AE4'].value = '임지지정'
                 ws[i]['AE4'].font = fontStyle
                 ws[i]['AE4'].fill = PatternFill(patternType='solid', fgColor=Color('C2E7FF'))
@@ -95,7 +103,7 @@ class SavingThread(QtCore.QThread):
                     disposed = ''
                 else:
                     disposed = self.internal[i].disposed
-                cell = ws[index].cell(row=self.internal[i].id + 6, column=31, value=disposed)
+                cell = ws[index].cell(row=self.internal[i].id + 6, column=32, value=disposed)
                 cell.font = fontStyle
                 cell.alignment = alignment
 
@@ -104,12 +112,12 @@ class SavingThread(QtCore.QThread):
                     disposed = ''
                 else:
                     disposed = self.invited[i].disposed
-                cell = ws_invited.cell(row=self.invited[i].id + 6, column=31, value=disposed)
+                cell = ws_invited.cell(row=self.invited[i].id + 6, column=32, value=disposed)
                 cell.font = fontStyle
                 cell.alignment = alignment
 
             wb.close()
-            wb.save(self.internal_file_url)
+            wb.save(fname + '_결과' +  ext)
             print("internal saved")
 
         except Exception as e:
@@ -118,6 +126,8 @@ class SavingThread(QtCore.QThread):
             if self.msg:
                 self.msg += ', '
             self.msg += '관내명부'
+
+        print('aaaaa??')
 
     def save_external(self):
         try:
@@ -132,17 +142,17 @@ class SavingThread(QtCore.QThread):
             ws = wb['순위명부']
 
             fontStyle = Font(size="8")
-            #
+
             for i in range(0, self.external.__len__()):
                 if self.external[i].disposed is None:
                     disposed = ''
                 else:
                     disposed = self.external[i].disposed
-                cell = ws.cell(row=i + 3, column=11, value=disposed)
+                cell = ws.cell(row=self.external[i].id + 3, column=11, value=disposed)
                 cell.font = fontStyle
 
             wb.close()
-            wb.save(self.external_file_url)
+            wb.save(fname + '_결과' +  ext)
             print("external saved")
 
         except Exception as e:
@@ -175,7 +185,7 @@ class SavingThread(QtCore.QThread):
                 cell.font = fontStyle
 
             wb.close()
-            wb.save(self.school_file_url)
+            wb.save(fname + '_결과' +  ext)
 
             print("schools saved")
 

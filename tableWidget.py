@@ -13,8 +13,8 @@ from teacher_external import TeacherExternal
 
 class WorkingField(QtWidgets.QWidget):
 
-    def __init__(self, parent=None, **kwargs):
-        QtWidgets.QWidget.__init__(self, parent)
+    def __init__(self, **kwargs):
+        super().__init__()
         self.controller = kwargs['controller']
         self.schools = kwargs['schools']
         self.hash_schools = kwargs['hash_school']
@@ -27,7 +27,6 @@ class WorkingField(QtWidgets.QWidget):
 
         self.set_up_ui()
 
-        # self.ui.show()
         self.showMaximized()
 
     @pyqtSlot()
@@ -129,16 +128,27 @@ class WorkingField(QtWidgets.QWidget):
     @pyqtSlot()
     def save(self):
         try:
-            filename = QFileDialog.getSaveFileName(self, "Save file", "", "Excel (*.xlsx, *xlsm)")
-
-            print(filename)
+            filename = QFileDialog.getSaveFileName(self, "Save file", "", "Excel (*.xlsx *.xlsm)")
 
             if filename[0] != '':
-                self.controller.save(filename[0] + '.xlsx')
+                self.controller.save(filename[0])
 
         except Exception as e:
             print(e)
         # controller.save_file(self, self.designation, self.schools, self.teachers_internal, self.teachers_external)
+
+    @pyqtSlot(int,)
+    def teacherInfoChanged(self, row):
+        self.ui.teacherInfoEdit.clear()
+
+        print('{}'.format(self.ui.unspecified_tabWidget.currentIndex()))
+
+        if self.ui.unspecified_tabWidget.currentIndex() == 0:
+            teacher = self.ui.tableWidget_internal.item(row, 2).data(Qt.UserRole)
+        else:
+            teacher = self.ui.tableWidget_external.item(row, 4).data(Qt.UserRole)
+
+        self.ui.teacherInfoEdit.append(teacher.__str__())
 
     def set_up_ui(self):
 
@@ -208,8 +218,6 @@ class WorkingField(QtWidgets.QWidget):
 
         i = self.ui.tableWidget_external.rowCount()
         self.ui.tableWidget_external.insertRow(i)
-        print(type(teacher))
-        print('set {}'.format(teacher))
         self.ui.tableWidget_external.setItem(i, 0, widget_items.StringItem(teacher.type))
         self.ui.tableWidget_external.setItem(i, 1, widget_items.StringItem(teacher.region))
         self.ui.tableWidget_external.setItem(i, 2, widget_items.StringItem(teacher.school))
@@ -246,10 +254,8 @@ class WorkingField(QtWidgets.QWidget):
     def add_internal_table_items(self):
         self.ui.tableWidget_internal.setRowCount(0)
 
-        print('{}'.format(self.teachers_internal.__len__()))
         i = 0
         for teacher in self.teachers_internal:
-            print('aasdasdadsasd')
             if teacher.disposed is None:
                 self.set_internal_row(teacher)
                 i += 1

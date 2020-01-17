@@ -47,11 +47,10 @@ QTableWidget{
 QTableWidget::item:selected {
 	background-color: rgb(116, 158, 205);
 	color: white;
-	border: 2px solid rgb(116, 158, 205);
 }</string>
      </property>
      <property name="sizeAdjustPolicy">
-      <enum>QAbstractScrollArea::AdjustToContents</enum>
+      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
