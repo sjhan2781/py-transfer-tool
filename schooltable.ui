@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1251</width>
-    <height>563</height>
+    <height>625</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -31,26 +31,8 @@
    </property>
    <item row="0" column="0">
     <widget class="QTableWidget" name="designedTableWidget">
-     <property name="styleSheet">
-      <string notr="true">QHeaderView::section{
-	background-color	: rgb(51, 96, 149);
-	color: white;
-}
-
-QTableWidget{
-	background:rgb(255, 255, 255);
-	alternate-background-color:rgb(207, 222, 238);
-	selection-background-color:transparent;
-	show-decoration-selected:10;
-}
-
-QTableWidget::item:selected {
-	background-color: rgb(116, 158, 205);
-	color: white;
-}</string>
-     </property>
      <property name="sizeAdjustPolicy">
-      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+      <enum>QAbstractScrollArea::AdjustToContents</enum>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
@@ -69,9 +51,6 @@ QTableWidget::item:selected {
      </property>
      <attribute name="horizontalHeaderCascadingSectionResizes">
       <bool>true</bool>
-     </attribute>
-     <attribute name="horizontalHeaderHighlightSections">
-      <bool>false</bool>
      </attribute>
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>

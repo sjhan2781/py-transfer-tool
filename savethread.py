@@ -10,9 +10,15 @@ from openpyxl.styles import Font, Alignment, PatternFill, Color
 from openpyxl.worksheet.page import PageMargins
 from openpyxl.worksheet.pagebreak import Break, ColBreak, RowBreak
 
+SLEEP = 1
+
 
 class SavingThread(QtCore.QThread):
-    # signal = QtCore.pyqtSignal()
+    show_msg_box = QtCore.pyqtSignal(str, bool)
+    set_state_internal = QtCore.pyqtSignal(int)
+    set_state_external = QtCore.pyqtSignal(int)
+    set_state_school = QtCore.pyqtSignal(int)
+    set_state_result = QtCore.pyqtSignal(int)
 
     def __init__(self, **kwargs):
         super().__init__()
@@ -36,20 +42,6 @@ class SavingThread(QtCore.QThread):
 
     def run(self) -> None:
         self.save()
-        # t1 = Thread(target=self.save_internal)
-        # t2 = Thread(target=self.save_schools)
-        # t3 = Thread(target=self.save_external)
-        # t4 = Thread(target=self.make_result_file)
-        #
-        # t1.start()
-        # t2.start()
-        # t3.start()
-        # t4.start()
-        #
-        # t1.join()
-        # t2.join()
-        # t3.join()
-        # t4.join()
 
     def save(self):
         self.is_error = False
@@ -69,6 +61,10 @@ class SavingThread(QtCore.QThread):
         t2.join()
         t3.join()
         t4.join()
+
+        if not self.is_error:
+            self.msg = "저장되었습니다."
+        self.show_msg_box.emit(self.msg, self.is_error)
 
     def save_internal(self):
         try:
@@ -93,6 +89,7 @@ class SavingThread(QtCore.QThread):
                 ws[i]['AE4'].fill = PatternFill(patternType='solid', fgColor=Color('C2E7FF'))
                 ws[i]['AE4'].alignment = alignment
 
+            count = 0
             for i in range(0, self.internal.__len__()):
                 if '비정기' in self.internal[i].type:
                     index = 1
@@ -106,6 +103,9 @@ class SavingThread(QtCore.QThread):
                 cell = ws[index].cell(row=self.internal[i].id + 6, column=32, value=disposed)
                 cell.font = fontStyle
                 cell.alignment = alignment
+                count += 1
+                self.msleep(SLEEP)
+                self.set_state_internal.emit(count)
 
             for i in range(0, self.invited.__len__()):
                 if self.invited[i].disposed is None:
@@ -115,8 +115,10 @@ class SavingThread(QtCore.QThread):
                 cell = ws_invited.cell(row=self.invited[i].id + 6, column=32, value=disposed)
                 cell.font = fontStyle
                 cell.alignment = alignment
+                count += 1
+                self.msleep(SLEEP)
+                self.set_state_internal.emit(count)
 
-            wb.close()
             wb.save(fname + '_결과' +  ext)
             print("internal saved")
 
@@ -126,6 +128,8 @@ class SavingThread(QtCore.QThread):
             if self.msg:
                 self.msg += ', '
             self.msg += '관내명부'
+        finally:
+            wb.close()
 
         print('aaaaa??')
 
@@ -143,6 +147,7 @@ class SavingThread(QtCore.QThread):
 
             fontStyle = Font(size="8")
 
+            count = 0
             for i in range(0, self.external.__len__()):
                 if self.external[i].disposed is None:
                     disposed = ''
@@ -150,8 +155,10 @@ class SavingThread(QtCore.QThread):
                     disposed = self.external[i].disposed
                 cell = ws.cell(row=self.external[i].id + 3, column=11, value=disposed)
                 cell.font = fontStyle
+                count += 1
+                self.msleep(SLEEP)
+                self.set_state_external.emit(count)
 
-            wb.close()
             wb.save(fname + '_결과' +  ext)
             print("external saved")
 
@@ -161,6 +168,9 @@ class SavingThread(QtCore.QThread):
             if self.msg:
                 self.msg += ', '
             self.msg += '관외명부'
+
+        finally:
+            wb.close()
 
     def save_schools(self):
         try:
@@ -176,6 +186,7 @@ class SavingThread(QtCore.QThread):
 
             fontStyle = Font(size="8")
 
+            count = 0
             for i in range(0, self.schools.__len__()):
                 cell = ws.cell(row=i + 8, column=53, value=self.schools[i].gone)
                 cell.font = fontStyle
@@ -183,8 +194,12 @@ class SavingThread(QtCore.QThread):
                 cell.font = fontStyle
                 cell = ws.cell(row=i + 8, column=56, value=self.schools[i].outside)
                 cell.font = fontStyle
+                cell = ws.cell(row=i + 8, column=64, value=self.schools[i].term)
+                cell.font = fontStyle
+                count += 1
+                self.msleep(SLEEP)
+                self.set_state_school.emit(count)
 
-            wb.close()
             wb.save(fname + '_결과' +  ext)
 
             print("schools saved")
@@ -192,13 +207,18 @@ class SavingThread(QtCore.QThread):
         except Exception as e:
             print(e)
             self.is_error = True
+
             if self.msg:
                 self.msg += ', '
             self.msg += '결충원'
 
+        finally:
+            wb.close()
+
     def make_result_file(self):
         try:
             wb = openpyxl.Workbook()
+            self.counter = 0
             sheet1 = wb.active
             sheet1.title = '관내발령결과'
             self.make_result_sheet(sheet1, self.internal, '경기도시흥교육지원청 초등교사 정기인사(관내)-현임교순')
@@ -215,7 +235,6 @@ class SavingThread(QtCore.QThread):
             sheet5 = wb.create_sheet('봉투라벨')
             self.make_pack_label(sheet5)
 
-            wb.close()
             wb.save(self.result_file_url)
 
             print('result saved')
@@ -226,6 +245,9 @@ class SavingThread(QtCore.QThread):
             if self.msg:
                 self.msg += ', '
             self.msg += '발령결과'
+
+        finally:
+            wb.close()
 
     def make_result_sheet(self, sheet, teachers, title):
         fontStyle = Font(size="14", bold=True)
@@ -260,8 +282,13 @@ class SavingThread(QtCore.QThread):
         sheet['F2'].font = fontStyle
         sheet['F2'].alignment = Alignment(horizontal='center')
 
+        sheet.column_dimensions['E'].hidden = True
+        sheet.column_dimensions['F'].width = 25.0
+
         row = 3
         for teacher in teachers:
+            self.counter += 1
+            self.set_state_result.emit(self.counter)
             if teacher.disposed is None:
                 continue
 
@@ -300,9 +327,6 @@ class SavingThread(QtCore.QThread):
         f.alignment = Alignment(wrap_text=True)
         f.font = fontStyle
 
-        sheet.column_dimensions['E'].hidden = True
-        sheet.column_dimensions['F'].width = 25.0
-
     def make_data_in(self, sheet):
         # sheet.print_title_cols = 'A:H'  # the first two cols
         # sheet.print_title_rows = '1:1'  # the first row
@@ -322,9 +346,11 @@ class SavingThread(QtCore.QThread):
         self.write_to_cell(sheet['H1'], '생년월일', fontStyle, alignment)
 
         i = 1
-        row = 2;
+        row = 2
 
         for teacher in self.internal:
+            self.counter += 1
+            self.set_state_result.emit(self.counter)
             if teacher.disposed is None:
                 continue
 
@@ -341,6 +367,8 @@ class SavingThread(QtCore.QThread):
             row += 1
 
         for teacher in self.invited:
+            self.counter += 1
+            self.set_state_result.emit(self.counter)
             if teacher.disposed is None:
                 continue
 
@@ -357,6 +385,8 @@ class SavingThread(QtCore.QThread):
             row += 1
 
         for teacher in self.external:
+            self.counter += 1
+            self.set_state_result.emit(self.counter)
             if teacher.disposed is None:
                 continue
 
@@ -428,15 +458,11 @@ class SavingThread(QtCore.QThread):
         self.write_to_cell(sheet['K2'], '성명', fontStyle, alignment)
         self.write_to_cell(sheet['L2'], '임지지정', fontStyle, alignment)
 
-
         for i in range(0, self.schools.__len__()):
             row = i * 25 + 3
 
             row_break = Break(id=(i+1)*25+2)  # create Break obj
             sheet.row_breaks.append(row_break)
-            # column_break = ColBreak(count=1)
-            # sheet.col_breaks.append(column_break)
-            # sheet.page_breaks
 
             for teacher in self.designation[i]:
                 self.write_to_cell(sheet.cell(row=row, column=1), teacher.disposed, fontStyle, alignment)
@@ -450,15 +476,20 @@ class SavingThread(QtCore.QThread):
 
                 self.write_to_cell(sheet.cell(row=row, column=4), teacher.school, fontStyle, alignment)
                 self.write_to_cell(sheet.cell(row=row, column=5), teacher.name, fontStyle, alignment)
-                # self.write_to_cell(sheet.cell(row=row, column=6), teacher.birth, fontStyle, alignment)
+                self.write_to_cell(sheet.cell(row=row, column=6), teacher.birth, fontStyle, alignment)
                 self.write_to_cell(sheet.cell(row=row, column=7), teacher.sex, fontStyle, alignment)
                 row += 1
                 # print(self.designation[j])
+                self.counter += 1
+                self.set_state_result.emit(self.counter)
 
             row = i * 25 + 3
             for teacher in self.gone[i]:
+                self.counter += 1
+                self.set_state_result.emit(self.counter)
                 if '타시군' in teacher.type:
-                    self.write_to_cell(sheet.cell(row=row, column=9), '타시군', fontStyle, alignment)
+                    continue
+                    # self.write_to_cell(sheet.cell(row=row, column=9), '타시군', fontStyle, alignment)
                     # self.write_to_cell(sheet.cell(row=row, column=9), teacher.region, fontStyle, alignment)
 
                 else:
@@ -469,5 +500,6 @@ class SavingThread(QtCore.QThread):
                 self.write_to_cell(sheet.cell(row=row, column=11), teacher.name, fontStyle, alignment)
                 self.write_to_cell(sheet.cell(row=row, column=12), teacher.disposed, fontStyle, alignment)
                 row += 1
+
                 # print(self.gone[j])
 

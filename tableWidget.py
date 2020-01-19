@@ -68,8 +68,12 @@ class WorkingField(QtWidgets.QWidget):
                 teacher = tableWidget.item(selected_row, 4).data(Qt.UserRole)
 
                 cur_widget = self.ui.stackedWidget.currentWidget()
-                teacher.disposed = self.schools[selected_tab].name
-                self.schools[selected_tab].outside += 1
+
+                if '미지정' in teacher.name:
+                    self.schools[selected_tab].term += 1
+                else:
+                    teacher.disposed = self.schools[selected_tab].name
+                    self.schools[selected_tab].outside += 1
 
                 tableWidget.removeRow(selected_row)
                 cur_widget.add_item(teacher)
@@ -87,12 +91,13 @@ class WorkingField(QtWidgets.QWidget):
 
             if isinstance(teacher, TeacherExternal):
                 self.set_external_row(teacher)
-                # self.teachers_external.append(teacher)
-                self.schools[selected_tab].outside -= 1
+                if '미지정' in teacher.name:
+                    self.schools[selected_tab].term -= 1
+                else:
+                    self.schools[selected_tab].outside -= 1
 
             else:
                 self.set_internal_row(teacher)
-                # self.teachers_internal.append(teacher)
                 self.schools[selected_tab].inside -= 1
 
                 school_num = self.hash_schools.get(teacher.school) - 1
@@ -235,7 +240,7 @@ class WorkingField(QtWidgets.QWidget):
         self.ui.tableWidget_external.setItem(i, 14, widget_items.StringItem(teacher.ab_end))
         self.ui.tableWidget_external.setItem(i, 15, widget_items.StringItem(teacher.related_school))
         self.ui.tableWidget_external.setItem(i, 16, widget_items.StringItem(teacher.relation))
-        self.ui.tableWidget_external.setItem(i, 17, widget_items.StringItem(teacher.relation_name))
+        self.ui.tableWidget_external.setItem(i, 17, widget_items.StringItem(teacher.relation_person))
         self.ui.tableWidget_external.setItem(i, 18, widget_items.StringItem(teacher.address))
         self.ui.tableWidget_external.setItem(i, 19, widget_items.StringItem(teacher.phone))
         self.ui.tableWidget_external.setItem(i, 20, widget_items.StringItem(teacher.email))

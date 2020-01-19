@@ -5,24 +5,19 @@ import custom_widget_item as custom
 from teacher_internal import TeacherInternal
 
 
-class SchoolTableGone(QtWidgets.QWidget):
+class SchoolTable(QtWidgets.QDialog):
 
-    def __init__(self, gone, parent=None):
-        QtWidgets.QWidget.__init__(self, parent)
-        self.ui = uic.loadUi("schooltable_gone.ui", self)
+    def __init__(self, designation, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.ui = uic.loadUi("schooltable.ui", self)
         self.ui.designedTableWidget.resizeColumnsToContents()
-        self.gone = gone
-        self.add_table_items(self.gone)
+        self.designation = designation
+        self.add_table_items(self.designation)
         self.parent = parent
 
         self.ui.designedTableWidget.itemDoubleClicked.connect(self.get_row)
 
-    def set_row(self, teacher):
-        self.ui.designedTableWidget.setSortingEnabled(False)
-
-        i = self.ui.designedTableWidget.rowCount()
-        self.ui.designedTableWidget.insertRow(i)
-
+    def set_row(self, i, teacher):
         self.ui.designedTableWidget.setItem(i, 0, custom.StringItem(teacher.type))
         self.ui.designedTableWidget.setItem(i, 1, custom.StringItem(teacher.school))
         self.ui.designedTableWidget.setItem(i, 2, custom.CustomItem(teacher))
@@ -36,7 +31,6 @@ class SchoolTableGone(QtWidgets.QWidget):
         self.ui.designedTableWidget.setItem(i, 7, custom.StringItem(teacher.third))
         self.ui.designedTableWidget.setItem(i, 8, custom.StringItem(teacher.remarks))
 
-        self.ui.designedTableWidget.setSortingEnabled(True)
 
         # 내용에 맞춰 셀 크기 자동 조정
         self.ui.designedTableWidget.resizeColumnsToContents()
@@ -49,36 +43,36 @@ class SchoolTableGone(QtWidgets.QWidget):
         self.thread.start()
 
     @pyqtSlot()
-    def add_table_items(self, gone):
-        self.ui.designedTableWidget.setRowCount(0)
+    def add_table_items(self, designation):
+        self.ui.designedTableWidget.setRowCount(designation.__len__())
 
-        for i in range(0, gone.__len__()):
-            self.set_row(gone[i])
+        for i in range(0, designation.__len__()):
+            self.set_row(i, designation[i])
 
     def add_item(self, teacher):
-        self.set_row(teacher)
-        self.gone.append(teacher)
+        index = self.designedTableWidget.rowCount()
+        self.ui.designedTableWidget.insertRow(index)
+        self.set_row(index, teacher)
+        self.designation.append(teacher)
 
     def pop(self, index):
-        teacher = self.ui.designedTableWidget.item(index, 2).data(Qt.UserRole)
-        self.ui.designedTableWidget.removeRow(index)
-        return teacher
-        # if "타시군" in self.ui.designedTableWidget.item(index, 0).text():
-        #     return self.pop_external(index)
-        # else:
-        #     return self.pop_internal(index)
+
+        if "타시군" in self.ui.designedTableWidget.item(index, 0).text():
+            return self.pop_external(index)
+        else:
+            return self.pop_internal(index)
 
     def pop_external(self, index):
 
-        teacher = self.ui.designedTableWidget.item(index, 2).data(Qt.UserRole)
+        teacher = int(self.ui.designedTableWidget.item(index, 9).data(Qt.UserRole))
         self.ui.designedTableWidget.removeRow(index)
 
         t = None
-        for tmp in self.gone:
+        for tmp in self.designation:
             if teacher == tmp:
                 if '타시군' in tmp.type:
                     t = tmp
-                    self.gone.remove(t)
+                    self.designation.remove(t)
                     break
 
         return t
@@ -88,14 +82,22 @@ class SchoolTableGone(QtWidgets.QWidget):
         teacher = self.ui.designedTableWidget.item(index, 2).data(Qt.UserRole)
         self.ui.designedTableWidget.removeRow(index)
 
-        return teacher
+        t = None
+        for tmp in self.designation:
+            if teacher == tmp:
+                if not ('타시군' in tmp.type):
+                    t = tmp
+                    self.designation.remove(t)
+                    break
+
+        return t
 
     @pyqtSlot(QTableWidgetItem)
     def get_row(self, item):
 
         teacher = self.ui.designedTableWidget.item(item.row(), 2).data(Qt.UserRole)
 
-        for tmp in self.gone:
+        for tmp in self.designation:
             if tmp == teacher:
                 self.parent.moveTo(teacher)
                 break

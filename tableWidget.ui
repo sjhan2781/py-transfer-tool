@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>702</height>
+    <width>1688</width>
+    <height>1166</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -292,7 +292,7 @@
     </layout>
    </item>
    <item row="2" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout_4" stretch="5,0">
+    <layout class="QVBoxLayout" name="verticalLayout_4" stretch="6,2">
      <item>
       <widget class="QTabWidget" name="unspecified_tabWidget">
        <property name="styleSheet">

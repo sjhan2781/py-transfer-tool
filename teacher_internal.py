@@ -1,3 +1,6 @@
+from none_checker import NoneChecker
+
+
 class TeacherInternal:
     def __init__(self, **kwargs):
         self.id = kwargs['id']
@@ -6,34 +9,27 @@ class TeacherInternal:
         self.type = kwargs['type'].value
         self.school = kwargs['school'].value
         self.name = kwargs['name'].value
-        self.regist_num = kwargs['regist_num'].internal_value
+        self.regist_num = kwargs['regist_num'].value
         self.sex = kwargs['sex'].value
         self.region_grade = kwargs['region_grade'].value
         # self.date = kwargs['date'].value
-        self.transfer_score = kwargs['transfer_score'] .internal_value
-        self.transfer_year = kwargs['transfer_year'] .internal_value
+        self.transfer_score = NoneChecker.check_valid(self, kwargs['transfer_score'].value)
+        self.transfer_year = NoneChecker.check_valid(self, kwargs['transfer_year'].value)
 
-        if kwargs['first'].value == 0:
-            self.first = None
-        else:
-            self.first = kwargs['first'].value
+        self.first = kwargs['first'].value
 
-        if kwargs['second'].value == 0:
-            self.second = None
-        else:
-            self.second = kwargs['second'].value
+        self.second = kwargs['second'].value
 
-        if kwargs['third'].value == 0:
-            self.third = None
-        else:
-            self.third = kwargs['third'].value
+        self.third = kwargs['third'].value
 
         self.remarks = kwargs['remarks'].value
         self.disposed = kwargs['disposed'].value
-        self.birth = ''
-        # self.birth = '{}.{}.{}'.format(self.regist_num / 100000000000,
-        #                                self.regist_num / 1000000000,
-        #                                self.regist_num / 10000000)
+
+        self.regist_num_str = str(self.regist_num)
+
+        self.birth = '{}.{}.{}'.format(self.regist_num_str[0:2],
+                                       self.regist_num_str[2:4],
+                                       self.regist_num_str[4:6])
 
     def __lt__(self, other):
         if self.transfer_year != other.transfer_year:
@@ -41,8 +37,8 @@ class TeacherInternal:
         else:
             if self.transfer_score != other.transfer_score:
                 return self.transfer_score > other.transfer_score
-            # else:
-            #     return self.birth > other.birth
+            else:
+                return self.birth < other.birth
 
     def __str__(self) -> str:
         return '이름 = %-5s //  전보유형 = %-s  // 성별 = %s\n' \

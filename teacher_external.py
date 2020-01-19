@@ -9,7 +9,7 @@ class TeacherExternal:
         self.name = kwargs['name'].value
         self.birth = kwargs['birth'].value
         self.sex = kwargs['sex'].value
-        self.career = kwargs['career'].value
+        self.career: str = str(kwargs['career'].internal_value)
 
         if isinstance(kwargs['major'].value, str):
             self.major = kwargs['major'].value
