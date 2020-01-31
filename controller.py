@@ -3,6 +3,7 @@ import os
 from PyQt5.QtCore import QObject, pyqtSlot, qDebug
 from PyQt5.QtWidgets import QMessageBox, QApplication
 from openpyxl import load_workbook
+from openpyxl.utils.exceptions import InvalidFileException
 
 from loadingwidget import LoadingWidget
 from postthread import PostingThread
@@ -198,22 +199,23 @@ class StartController(QObject):
             print(t.id)
             self.show_msg_box("{}시트 {}번 행 서식을 확인해주세요.".format(ws.title, i + 6), True)
             self.flag_internal = False
+            wb.close()
 
         except KeyError as e:
             print(e)
             self.show_msg_box("시트 이름을 확인해주세요.", True)
             self.flag_internal = False
+            wb.close()
 
         except Exception as e:
             print(e)
             self.show_msg_box("올바른 파일을 선택해주세요.", True)
             self.flag_internal = False
+            # wb.close()
 
         else:
             self.flag_internal = True
             self.show_msg_box("성공적으로 불러왔습니다.", False)
-
-        finally:
             wb.close()
 
     def get_school_list(self, file_url):
@@ -252,24 +254,27 @@ class StartController(QObject):
             print(e)
             self.show_msg_box("{}번째 행 서식을 확인해주세요.".format(i + 8), True)
             self.flag_internal = False
+            wb.close()
 
         except KeyError as e:
             print(e)
             self.show_msg_box("시트 이름을 확인해주세요.", True)
             self.flag_internal = False
+            wb.close()
 
         except Exception as e:
             print(e)
+
+            # if isinstance(e, InvalidFileException):
             StartView.show_msg_box("올바른 파일을 선택해주세요.", True)
             self.flag_schools = False
+            # wb.close()
 
         else:
             # self.designation = [[] for row in range(self.school_list.__len__())]
             # self.gone = [[] for row in range(self.school_list.__len__())]
             self.flag_schools = True
             StartView.show_msg_box("성공적으로 불러왔습니다.", False)
-
-        finally:
             wb.close()
 
     def get_external_list(self, file_url):
@@ -313,22 +318,23 @@ class StartController(QObject):
             print(e)
             self.show_msg_box("{}번째 행 서식을 확인해주세요.".format(i + 2), True)
             self.flag_internal = False
+            wb.close()
 
         except KeyError as e:
             print(e)
             self.show_msg_box("시트 이름을 확인해주세요.", True)
             self.flag_internal = False
+            wb.close()
 
         except Exception as e:
             print(e)
             StartView.show_msg_box("올바른 파일을 선택해주세요.", True)
             self.flag_external = False
+            wb.close()
 
         else:
             self.flag_external = True
             StartView.show_msg_box("성공적으로 불러왔습니다.", False)
-
-        finally:
             wb.close()
 
     def is_valid(self):
