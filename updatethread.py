@@ -124,7 +124,7 @@ class UpdatingThread(QtCore.QThread):
                 self.set_state_internal.emit(count)
 
             for i in range(0, self.priority.__len__()):
-                if self.priority[i].disposed is not None:
+                if self.priority[i].disposed is None:
                     value = ''
                 else:
                     value = self.priority[i].disposed.name

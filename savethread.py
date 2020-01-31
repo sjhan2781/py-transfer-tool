@@ -50,7 +50,7 @@ class SavingThread(QtCore.QThread):
             self.counter = 0
             sheet1 = wb.active
             sheet1.title = '관내발령결과'
-            self.make_result_sheet(sheet1, self.internal, '경기도시흥교육지원청 초등교사 정기인사(관내)-현임교순')
+            self.make_result_sheet(sheet1, self.priority + self.internal, '경기도시흥교육지원청 초등교사 정기인사(관내)-현임교순')
 
             sheet2 = wb.create_sheet('타시군(도)발령결과')
             self.make_result_sheet(sheet2, self.external, '경기도시흥교육지원청 초등교사 정기인사(관외)- 성명순')
