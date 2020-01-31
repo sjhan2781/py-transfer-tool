@@ -146,7 +146,7 @@ class SavingThread(QtCore.QThread):
             if isinstance(teacher, TeacherExternal):
                 value = teacher.region
             else:
-                value = '시'
+                value = '시흥'
             b = sheet.cell(row=row, column=2, value=value)
             b.alignment = Alignment(horizontal='center')
             b.font = fontStyle

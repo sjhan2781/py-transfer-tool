@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1756</width>
+    <width>1280</width>
     <height>694</height>
    </rect>
   </property>
@@ -178,7 +178,7 @@ QTableWidget::item:selected {
               <bool>false</bool>
              </attribute>
              <attribute name="verticalHeaderVisible">
-              <bool>false</bool>
+              <bool>true</bool>
              </attribute>
              <attribute name="verticalHeaderHighlightSections">
               <bool>false</bool>

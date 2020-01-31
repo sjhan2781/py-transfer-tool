@@ -76,9 +76,9 @@ class WorkingField(QtWidgets.QWidget):
                 if '미충원' in teacher.type:
                     self.schools[selected_tab].term += 1
                 else:
-                    teacher.disposed = self.schools[selected_tab]
                     self.schools[selected_tab].outside += 1
 
+                teacher.disposed = self.schools[selected_tab]
                 tableWidget.removeRow(selected_row)
                 cur_widget.add_item(teacher)
                 tableWidget.clearSelection()
