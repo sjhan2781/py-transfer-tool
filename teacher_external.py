@@ -1,56 +1,56 @@
 class TeacherExternal:
     def __init__(self, **kwargs):
         self.id = kwargs['id']
-        self.rank = kwargs['rank'].value
+        self.rank = kwargs['rank']
         self.type = kwargs['type']
-        self.region = kwargs['region'].value
-        self.position = kwargs['position'].value
-        self.school = kwargs['school'].value
-        self.name = kwargs['name'].value
-        self.birth = kwargs['birth'].value
-        self.sex = kwargs['sex'].value
-        self.career: str = str(kwargs['career'].internal_value)
+        self.region = kwargs['region']
+        self.position = kwargs['position']
+        self.school = kwargs['school']
+        self.name = kwargs['name']
+        self.birth = kwargs['birth']
+        self.sex = kwargs['sex']
+        self.career: str = str(kwargs['career'])
 
-        if isinstance(kwargs['major'].value, str):
-            self.major = kwargs['major'].value
+        if isinstance(kwargs['major'], str):
+            self.major = kwargs['major']
         else:
             self.major = None
 
-        if kwargs['first'].value == 0:
+        if kwargs['first'] == 0:
             self.first = None
         else:
-            self.first = kwargs['first'].value
+            self.first = kwargs['first']
 
-        if kwargs['second'].value == 0:
+        if kwargs['second'] == 0:
             self.second = None
         else:
-            self.second = kwargs['second'].value
+            self.second = kwargs['second']
 
-        if kwargs['third'].value == 0:
+        if kwargs['third'] == 0:
             self.third = None
         else:
-            self.third = kwargs['third'].value
+            self.third = kwargs['third']
 
-        self.ab_type = kwargs['ab_type'].value
-        self.ab_start = kwargs['ab_start'].value
-        self.ab_end = kwargs['ab_end'].value
-        self.related_school = kwargs['related_school'] .value
-        self.relation = kwargs['relation'].value
-        self.relation_person = kwargs['relation_person'].value
-        self.address = kwargs['address'].value
-        self.phone = kwargs['phone'].value
-        self.email = kwargs['email'].value
-        self.vehicle = kwargs['vehicle'].value
-        self.remarks = kwargs['remarks'].value
+        self.ab_type = kwargs['ab_type']
+        self.ab_start = kwargs['ab_start']
+        self.ab_end = kwargs['ab_end']
+        self.related_school = kwargs['related_school'] 
+        self.relation = kwargs['relation']
+        self.relation_person = kwargs['relation_person']
+        self.address = kwargs['address']
+        self.phone = kwargs['phone']
+        self.email = kwargs['email']
+        self.vehicle = kwargs['vehicle']
+        self.remarks = kwargs['remarks']
         self.disposed = None
-        # self.disposed = kwargs['disposed'].value
+        # self.disposed = kwargs['disposed']
 
     def __str__(self) -> str:
-        return '이름 = %-5s //  지역 = %s  //  성별 = %-3s//\n' \
-               '생년월일 = %s  //  교육총경력 = %s\n' \
-               '1지망 = %-5s  //  2지망 = %-5s //  3지망 = %-5s\n' \
-               '휴직 종류 = %s  // 시작일 = %s  //  종료일 = %s\n' \
-               '친인척 학교명 = %s  //  관계 = %s  //  성명  = %s\n' \
+        return '이름 = %-5s     지역 = %s      성별 = %-3s\n' \
+               '생년월일 = %s      교육총경력 = %s\n' \
+               '1지망 = %-5s      2지망 = %-5s     3지망 = %-5s\n' \
+               '휴직 종류 = %s     시작일 = %s      종료일 = %s\n' \
+               '친인척 학교명 = %s      관계 = %s      성명  = %s\n' \
                '주소 = %s\n' \
                '비고 = %s' % (self.name, self.region, self.sex,
                             self.birth, self.career,

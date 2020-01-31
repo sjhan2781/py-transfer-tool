@@ -1,23 +1,18 @@
-import os
-import time
-from threading import Thread
 
 import openpyxl
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QMessageBox
-from openpyxl import load_workbook
-from openpyxl.styles import Font, Alignment, PatternFill, Color
+from openpyxl.styles import Font, Alignment, PatternFill, Color, Border, Side
 from openpyxl.worksheet.page import PageMargins
-from openpyxl.worksheet.pagebreak import Break, ColBreak, RowBreak
+from openpyxl.worksheet.pagebreak import Break
+
+from teacher_external import TeacherExternal
 
 SLEEP = 1
+PAGE_BREAK = 26
 
 
 class SavingThread(QtCore.QThread):
     show_msg_box = QtCore.pyqtSignal(str, bool)
-    set_state_internal = QtCore.pyqtSignal(int)
-    set_state_external = QtCore.pyqtSignal(int)
-    set_state_school = QtCore.pyqtSignal(int)
     set_state_result = QtCore.pyqtSignal(int)
 
     def __init__(self, **kwargs):
@@ -27,17 +22,13 @@ class SavingThread(QtCore.QThread):
         self.schools = kwargs['schools']
         self.invited = kwargs['invited']
         self.priority = kwargs['priority']
-        self.internal_file_url = kwargs['internal_file_url']
         self.designation = kwargs['designation']
         self.gone = kwargs['gone']
-        self.school_file_url = kwargs['school_file_url']
-        self.external_file_url = kwargs['external_file_url']
         self.result_file_url = None
         self.controller = kwargs['controller']
 
         self.is_error = False
         self.msg = ''
-
         # self.finished.connect(self.controller.show_msg_box)
 
     def run(self) -> None:
@@ -47,173 +38,11 @@ class SavingThread(QtCore.QThread):
         self.is_error = False
         self.msg = ''
 
-        t1 = Thread(target=self.save_internal)
-        t2 = Thread(target=self.save_schools)
-        t3 = Thread(target=self.save_external)
-        t4 = Thread(target=self.make_result_file)
-
-        t1.start()
-        t2.start()
-        t3.start()
-        t4.start()
-
-        t1.join()
-        t2.join()
-        t3.join()
-        t4.join()
+        self.make_result_file()
 
         if not self.is_error:
             self.msg = "저장되었습니다."
         self.show_msg_box.emit(self.msg, self.is_error)
-
-    def save_internal(self):
-        try:
-            fname, ext = os.path.splitext(self.internal_file_url)
-
-            has_macro = False
-
-            if 'xlsm' in ext:
-                has_macro = True
-
-            wb = load_workbook(filename=self.internal_file_url, keep_vba=has_macro)
-            ws = [wb['초등(학교별)'], wb['비정기']]
-            ws_invited = wb['초빙']
-
-            fontStyle = Font(size="10")
-            alignment = Alignment(horizontal='center', vertical='center')
-
-            for i in range(0, ws.__len__()):
-                ws[i].merge_cells('AD4:AD5')
-                ws[i]['AE4'].value = '임지지정'
-                ws[i]['AE4'].font = fontStyle
-                ws[i]['AE4'].fill = PatternFill(patternType='solid', fgColor=Color('C2E7FF'))
-                ws[i]['AE4'].alignment = alignment
-
-            count = 0
-            for i in range(0, self.internal.__len__()):
-                if '비정기' in self.internal[i].type:
-                    index = 1
-                else:
-                    index = 0
-
-                if self.internal[i].disposed is None:
-                    disposed = ''
-                else:
-                    disposed = self.internal[i].disposed
-                cell = ws[index].cell(row=self.internal[i].id + 6, column=32, value=disposed)
-                cell.font = fontStyle
-                cell.alignment = alignment
-                count += 1
-                self.msleep(SLEEP)
-                self.set_state_internal.emit(count)
-
-            for i in range(0, self.invited.__len__()):
-                if self.invited[i].disposed is None:
-                    disposed = ''
-                else:
-                    disposed = self.invited[i].disposed
-                cell = ws_invited.cell(row=self.invited[i].id + 6, column=32, value=disposed)
-                cell.font = fontStyle
-                cell.alignment = alignment
-                count += 1
-                self.msleep(SLEEP)
-                self.set_state_internal.emit(count)
-
-            wb.save(fname + '_결과' +  ext)
-            print("internal saved")
-
-        except Exception as e:
-            print(e)
-            self.is_error = True
-            if self.msg:
-                self.msg += ', '
-            self.msg += '관내명부'
-        finally:
-            wb.close()
-
-        print('aaaaa??')
-
-    def save_external(self):
-        try:
-            fname, ext = os.path.splitext(self.external_file_url)
-
-            has_macro = False
-
-            if 'xlsm' in ext:
-                has_macro = True
-
-            wb = load_workbook(self.external_file_url, keep_vba=has_macro)
-            ws = wb['순위명부']
-
-            fontStyle = Font(size="8")
-
-            count = 0
-            for i in range(0, self.external.__len__()):
-                if self.external[i].disposed is None:
-                    disposed = ''
-                else:
-                    disposed = self.external[i].disposed
-                cell = ws.cell(row=self.external[i].id + 3, column=11, value=disposed)
-                cell.font = fontStyle
-                count += 1
-                self.msleep(SLEEP)
-                self.set_state_external.emit(count)
-
-            wb.save(fname + '_결과' +  ext)
-            print("external saved")
-
-        except Exception as e:
-            print(e)
-            self.is_error = True
-            if self.msg:
-                self.msg += ', '
-            self.msg += '관외명부'
-
-        finally:
-            wb.close()
-
-    def save_schools(self):
-        try:
-            fname, ext = os.path.splitext(self.school_file_url)
-
-            has_macro = False
-
-            if 'xlsm' in ext:
-                has_macro = True
-
-            wb = load_workbook(self.school_file_url, keep_vba=has_macro)
-            ws = wb['결충원']
-
-            fontStyle = Font(size="8")
-
-            count = 0
-            for i in range(0, self.schools.__len__()):
-                cell = ws.cell(row=i + 8, column=53, value=self.schools[i].gone)
-                cell.font = fontStyle
-                cell = ws.cell(row=i + 8, column=54, value=self.schools[i].inside)
-                cell.font = fontStyle
-                cell = ws.cell(row=i + 8, column=56, value=self.schools[i].outside)
-                cell.font = fontStyle
-                cell = ws.cell(row=i + 8, column=64, value=self.schools[i].term)
-                cell.font = fontStyle
-                count += 1
-                self.msleep(SLEEP)
-                self.set_state_school.emit(count)
-
-            wb.save(fname + '_결과' +  ext)
-
-            print("schools saved")
-
-        except Exception as e:
-            print(e)
-            self.is_error = True
-
-            if self.msg:
-                self.msg += ', '
-            self.msg += '결충원'
-
-        finally:
-            wb.close()
 
     def make_result_file(self):
         try:
@@ -245,42 +74,55 @@ class SavingThread(QtCore.QThread):
             if self.msg:
                 self.msg += ', '
             self.msg += '발령결과'
-
-        finally:
             wb.close()
 
     def make_result_sheet(self, sheet, teachers, title):
         fontStyle = Font(size="14", bold=True)
+        thin_border = Border(left=Side(style='thin'),
+                             right=Side(style='thin'),
+                             top=Side(style='thin'),
+                             bottom=Side(style='thin'))
 
         sheet.merge_cells('A1:F1')
-        sheet['A1'] = title
-        sheet['A1'].font = fontStyle
+        title_cell = sheet['A1']
+        title_cell.value = title
+        title_cell.font = fontStyle
+        title_cell.border = Border(left=Side(style='thin'),
+                             right=Side(style='thin'),
+                             top=Side(style='thin'),
+                             bottom=Side(style='thin'))
 
         fontStyle = Font(size="10")
 
         sheet['A2'] = '유형'
         sheet['A2'].font = fontStyle
         sheet['A2'].alignment = Alignment(horizontal='center')
+        sheet['A2'].border = thin_border
 
         sheet['B2'] = '지역'
         sheet['B2'].font = fontStyle
         sheet['B2'].alignment = Alignment(horizontal='center')
+        sheet['B2'].border = thin_border
 
         sheet['C2'] = '소속교'
         sheet['C2'].font = fontStyle
         sheet['C2'].alignment = Alignment(horizontal='center')
+        sheet['C2'].border = thin_border
 
         sheet['D2'] = '성명'
         sheet['D2'].font = fontStyle
         sheet['D2'].alignment = Alignment(horizontal='center')
+        sheet['D2'].border = thin_border
 
         sheet['E2'] = '성별'
         sheet['E2'].font = fontStyle
         sheet['E2'].alignment = Alignment(horizontal='center')
+        sheet['E2'].border = thin_border
 
         sheet['F2'] = '발령사항'
         sheet['F2'].font = fontStyle
         sheet['F2'].alignment = Alignment(horizontal='center')
+        sheet['F2'].border = thin_border
 
         sheet.column_dimensions['E'].hidden = True
         sheet.column_dimensions['F'].width = 25.0
@@ -292,7 +134,7 @@ class SavingThread(QtCore.QThread):
             if teacher.disposed is None:
                 continue
 
-            if '타시군' in teacher.type:
+            if isinstance(teacher, TeacherExternal):
                 value = '타시군전입'
             else:
                 value = '관내'
@@ -301,7 +143,11 @@ class SavingThread(QtCore.QThread):
             a.alignment = Alignment(horizontal='center')
             a.font = fontStyle
 
-            b = sheet.cell(row=row, column=2, value='시흥')
+            if isinstance(teacher, TeacherExternal):
+                value = teacher.region
+            else:
+                value = '시'
+            b = sheet.cell(row=row, column=2, value=value)
             b.alignment = Alignment(horizontal='center')
             b.font = fontStyle
 
@@ -309,6 +155,7 @@ class SavingThread(QtCore.QThread):
             c.alignment = Alignment(horizontal='center')
             c.font = fontStyle
 
+            print('aaaaaa')
             d = sheet.cell(row=row, column=4, value=teacher.name)
             d.alignment = Alignment(horizontal='center')
             d.font = fontStyle
@@ -317,15 +164,15 @@ class SavingThread(QtCore.QThread):
             e.alignment = Alignment(horizontal='center')
             e.font = fontStyle
 
-            f = sheet.cell(row=row, column=6, value=teacher.disposed + '등학교 근무를 명함')
+            f = sheet.cell(row=row, column=6, value=teacher.disposed.name + '등학교 근무를 명함')
             f.font = fontStyle
 
             row += 1
 
-        f = sheet.cell(row=row, column=6
+        g = sheet.cell(row=row, column=6
                        , value='이상 {}명\n경기도시흥교육지원청 교육장.\n끝.'.format(row-3))
-        f.alignment = Alignment(wrap_text=True)
-        f.font = fontStyle
+        g.alignment = Alignment(wrap_text=True)
+        g.font = fontStyle
 
     def make_data_in(self, sheet):
         # sheet.print_title_cols = 'A:H'  # the first two cols
@@ -353,15 +200,15 @@ class SavingThread(QtCore.QThread):
             self.set_state_result.emit(self.counter)
             if teacher.disposed is None:
                 continue
-
+            print('bbbbb')
             self.write_to_cell(sheet.cell(row=row, column=1), i, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=2), '관내', fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=3), '시흥', fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=4), teacher.school, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=5), teacher.name, fontStyle, alignment)
-            self.write_to_cell(sheet.cell(row=row, column=6), teacher.disposed, fontStyle, alignment)
+            self.write_to_cell(sheet.cell(row=row, column=6), teacher.disposed.name, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=7), teacher.sex, fontStyle, alignment)
-            # self.write_to_cell(sheet.cell(row=row, column=8, teacher.))
+            self.write_to_cell(sheet.cell(row=row, column=8), teacher.birth, fontStyle, alignment)
 
             i += 1
             row += 1
@@ -371,15 +218,15 @@ class SavingThread(QtCore.QThread):
             self.set_state_result.emit(self.counter)
             if teacher.disposed is None:
                 continue
-
+            print('ccccc')
             self.write_to_cell(sheet.cell(row=row, column=1), i, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=2), '초빙', fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=3), '시흥', fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=4), teacher.school, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=5), teacher.name, fontStyle, alignment)
-            self.write_to_cell(sheet.cell(row=row, column=6), teacher.disposed, fontStyle, alignment)
+            self.write_to_cell(sheet.cell(row=row, column=6), teacher.disposed.name, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=7), teacher.sex, fontStyle, alignment)
-            # self.write_to_cell(sheet.cell(row=row, column=8, teacher.))
+            self.write_to_cell(sheet.cell(row=row, column=8), teacher.birth, fontStyle, alignment)
 
             i += 1
             row += 1
@@ -395,26 +242,23 @@ class SavingThread(QtCore.QThread):
             self.write_to_cell(sheet.cell(row=row, column=3), teacher.region, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=4), teacher.school, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=5), teacher.name, fontStyle, alignment)
-            self.write_to_cell(sheet.cell(row=row, column=6), teacher.disposed, fontStyle, alignment)
+            self.write_to_cell(sheet.cell(row=row, column=6), teacher.disposed.name, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=7), teacher.sex, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=8), teacher.birth, fontStyle, alignment)
 
             i += 1
             row += 1
 
-    def write_to_cell(self, cell, value, font, alignment):
+    def write_to_cell(self, cell, value, font, alignment, color=PatternFill(), border=None):
         cell.value = value
         cell.font = font
         cell.alignment = alignment
+        cell.fill = color
+        cell.border = border
 
     def make_pack_label(self, sheet):
         fontStyle = Font(size="11")
         alignment = Alignment(horizontal='center')
-
-        sheet.merge_cells('A1:G1')
-        sheet['A1'] = '전입'
-        sheet['A1'].font = fontStyle
-        sheet['A1'].alignment = alignment
 
         sheet.column_dimensions['A'].width = 12.00
         sheet.column_dimensions['B'].width = 10.33
@@ -440,50 +284,37 @@ class SavingThread(QtCore.QThread):
                                          header=0.698055565357208,
                                          footer=0.314861118793488)
 
-        sheet.merge_cells('I1:L1')
-        sheet['I1'] = '전출'
-        sheet['I1'].font = fontStyle
-        sheet['I1'].alignment = alignment
-
-        self.write_to_cell(sheet['A2'], '신임교', fontStyle, alignment)
-        self.write_to_cell(sheet['B2'], '전보유형', fontStyle, alignment)
-        self.write_to_cell(sheet['C2'], '소속청', fontStyle, alignment)
-        self.write_to_cell(sheet['D2'], '소속교', fontStyle, alignment)
-        self.write_to_cell(sheet['E2'], '성명', fontStyle, alignment)
-        self.write_to_cell(sheet['F2'], '생년월일', fontStyle, alignment)
-        self.write_to_cell(sheet['G2'], '성별', fontStyle, alignment)
-
-        self.write_to_cell(sheet['I2'], '전보유형', fontStyle, alignment)
-        self.write_to_cell(sheet['J2'], '소속', fontStyle, alignment)
-        self.write_to_cell(sheet['K2'], '성명', fontStyle, alignment)
-        self.write_to_cell(sheet['L2'], '임지지정', fontStyle, alignment)
-
         for i in range(0, self.schools.__len__()):
-            row = i * 25 + 3
+            row = i * PAGE_BREAK
 
-            row_break = Break(id=(i+1)*25+2)  # create Break obj
+            row_break = Break(id=row)  # create Break obj
             sheet.row_breaks.append(row_break)
+            self.make_label_header(sheet, row)
 
             for teacher in self.designation[i]:
-                self.write_to_cell(sheet.cell(row=row, column=1), teacher.disposed, fontStyle, alignment)
-                if '타시군' in teacher.type:
-                    self.write_to_cell(sheet.cell(row=row, column=2), '타시군', fontStyle, alignment)
-                    self.write_to_cell(sheet.cell(row=row, column=3), teacher.region, fontStyle, alignment)
+
+                self.write_to_cell(sheet.cell(row=row+3, column=1), teacher.disposed.name, fontStyle, alignment)
+                if isinstance(teacher, TeacherExternal):
+                    if '미충원' in teacher.name:
+                        self.write_to_cell(sheet.cell(row=row+3, column=2), '미충원', fontStyle, alignment)
+                    else:
+                        self.write_to_cell(sheet.cell(row=row+3, column=2), '타시군', fontStyle, alignment)
+                    self.write_to_cell(sheet.cell(row=row+3, column=3), teacher.region, fontStyle, alignment)
 
                 else:
-                    self.write_to_cell(sheet.cell(row=row, column=2), '관내', fontStyle, alignment)
-                    self.write_to_cell(sheet.cell(row=row, column=3), '시흥', fontStyle, alignment)
+                    self.write_to_cell(sheet.cell(row=row+3, column=2), '관내', fontStyle, alignment)
+                    self.write_to_cell(sheet.cell(row=row+3, column=3), '시흥', fontStyle, alignment)
 
-                self.write_to_cell(sheet.cell(row=row, column=4), teacher.school, fontStyle, alignment)
-                self.write_to_cell(sheet.cell(row=row, column=5), teacher.name, fontStyle, alignment)
-                self.write_to_cell(sheet.cell(row=row, column=6), teacher.birth, fontStyle, alignment)
-                self.write_to_cell(sheet.cell(row=row, column=7), teacher.sex, fontStyle, alignment)
+                self.write_to_cell(sheet.cell(row=row+3, column=4), teacher.school, fontStyle, alignment)
+                self.write_to_cell(sheet.cell(row=row+3, column=5), teacher.name, fontStyle, alignment)
+                self.write_to_cell(sheet.cell(row=row+3, column=6), teacher.birth, fontStyle, alignment)
+                self.write_to_cell(sheet.cell(row=row+3, column=7), teacher.sex, fontStyle, alignment)
                 row += 1
                 # print(self.designation[j])
                 self.counter += 1
                 self.set_state_result.emit(self.counter)
 
-            row = i * 25 + 3
+            row = i * PAGE_BREAK
             for teacher in self.gone[i]:
                 self.counter += 1
                 self.set_state_result.emit(self.counter)
@@ -493,13 +324,51 @@ class SavingThread(QtCore.QThread):
                     # self.write_to_cell(sheet.cell(row=row, column=9), teacher.region, fontStyle, alignment)
 
                 else:
-                    self.write_to_cell(sheet.cell(row=row, column=9), '관내', fontStyle, alignment)
+                    self.write_to_cell(sheet.cell(row=row+3, column=9), '관내', fontStyle, alignment)
                     # self.write_to_cell(sheet.cell(row=row, column=3), '시흥', fontStyle, alignment)
-
-                self.write_to_cell(sheet.cell(row=row, column=10), teacher.school, fontStyle, alignment)
-                self.write_to_cell(sheet.cell(row=row, column=11), teacher.name, fontStyle, alignment)
-                self.write_to_cell(sheet.cell(row=row, column=12), teacher.disposed, fontStyle, alignment)
+                self.write_to_cell(sheet.cell(row=row+3, column=10), teacher.school, fontStyle, alignment)
+                self.write_to_cell(sheet.cell(row=row+3, column=11), teacher.name, fontStyle, alignment)
+                self.write_to_cell(sheet.cell(row=row+3, column=12), teacher.disposed.name, fontStyle, alignment)
                 row += 1
 
                 # print(self.gone[j])
 
+    def make_label_header(self, sheet, row):
+        fontStyle = Font(size="11")
+        alignment = Alignment(horizontal='center')
+        fill_coming = PatternFill(patternType='solid', fgColor=Color('5182BB'))
+        fill_gone = PatternFill(patternType='solid', fgColor=Color('D59493'))
+        thin_border = Border(left=Side(style='thin'),
+                             right=Side(style='thin'),
+                             top=Side(style='thin'),
+                             bottom=Side(style='thin'))
+
+        sheet.cell(row=row+1, column=1).value = '전입'
+        sheet.cell(row=row+1, column=1).font = fontStyle
+        sheet.cell(row=row+1, column=1).alignment = alignment
+        sheet.cell(row=row+1, column=1).fill = fill_coming
+        sheet.cell(row=row+1, column=1).border = thin_border
+
+        sheet.merge_cells(start_row=row+1, end_row=row+1, start_column=1, end_column=7)
+
+        # sheet.merge_cells('')
+        sheet.cell(row=row+1, column=9).value = '전출'
+        sheet.cell(row=row+1, column=9).font = fontStyle
+        sheet.cell(row=row+1, column=9).alignment = alignment
+        sheet.cell(row=row+1, column=9).fill = fill_gone
+        sheet.cell(row=row+1, column=9).border = thin_border
+
+        sheet.merge_cells(start_row=row+1, end_row=row+1, start_column=9, end_column=12)
+
+        self.write_to_cell(sheet.cell(row=row+2, column=1), '신임교', fontStyle, alignment, fill_coming, thin_border)
+        self.write_to_cell(sheet.cell(row=row+2, column=2), '전보유형', fontStyle, alignment, fill_coming, thin_border)
+        self.write_to_cell(sheet.cell(row=row+2, column=3), '소속청', fontStyle, alignment, fill_coming, thin_border)
+        self.write_to_cell(sheet.cell(row=row+2, column=4), '소속교', fontStyle, alignment, fill_coming, thin_border)
+        self.write_to_cell(sheet.cell(row=row+2, column=5), '성명', fontStyle, alignment, fill_coming, thin_border)
+        self.write_to_cell(sheet.cell(row=row+2, column=6), '생년월일', fontStyle, alignment, fill_coming, thin_border)
+        self.write_to_cell(sheet.cell(row=row+2, column=7), '성별', fontStyle, alignment, fill_coming, thin_border)
+
+        self.write_to_cell(sheet.cell(row=row+2, column=9), '전보유형', fontStyle, alignment, fill_gone, thin_border)
+        self.write_to_cell(sheet.cell(row=row+2, column=10), '소속', fontStyle, alignment, fill_gone, thin_border)
+        self.write_to_cell(sheet.cell(row=row+2, column=11), '성명', fontStyle, alignment, fill_gone, thin_border)
+        self.write_to_cell(sheet.cell(row=row+2, column=12), '임지지정', fontStyle, alignment, fill_gone, thin_border)

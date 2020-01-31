@@ -1,9 +1,8 @@
-
 import custom_widget_item as widget_items
 import controller
 
-from PyQt5.QtCore import pyqtSlot, Qt
-from PyQt5.QtWidgets import QTableWidgetItem, QListWidgetItem, QMessageBox, QFileDialog, QAbstractItemView
+from PyQt5.QtCore import pyqtSlot, Qt, qDebug
+from PyQt5.QtWidgets import QTableWidgetItem, QListWidgetItem, QMessageBox, QFileDialog, QAbstractItemView, QApplication
 from PyQt5 import QtWidgets, uic
 
 from schooltable_coming import SchoolTableComing
@@ -27,6 +26,11 @@ class WorkingField(QtWidgets.QWidget):
 
         self.set_up_ui()
 
+        self.ui.tableWidget_internal.itemDoubleClicked.connect(self.add)
+        self.ui.tableWidget_external.itemDoubleClicked.connect(self.add)
+
+        # self.close.connect(self.controller.show_dialog_exit)
+
         self.showMaximized()
 
     @pyqtSlot()
@@ -42,12 +46,12 @@ class WorkingField(QtWidgets.QWidget):
 
                 teacher = self.ui.tableWidget_internal.item(selected_row, 2).data(Qt.UserRole)
 
-                teacher.disposed = self.schools[selected_tab].name
+                teacher.disposed = self.schools[selected_tab]
 
-                gone_widget = self.ui.stackedWidget_gone.widget(self.hash_schools.get(teacher.school)-1)
+                gone_widget = self.ui.stackedWidget_gone.widget(self.hash_schools.get(teacher.school) - 1)
                 gone_widget.add_item(teacher)
 
-                if '만기' not in teacher.type or '비정기' not in teacher.type:
+                if '만기' not in teacher.type and '비정기' not in teacher.type:
                     self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
 
                 self.schools[selected_tab].inside += 1
@@ -69,10 +73,10 @@ class WorkingField(QtWidgets.QWidget):
 
                 cur_widget = self.ui.stackedWidget.currentWidget()
 
-                if '미지정' in teacher.name:
+                if '미충원' in teacher.type:
                     self.schools[selected_tab].term += 1
                 else:
-                    teacher.disposed = self.schools[selected_tab].name
+                    teacher.disposed = self.schools[selected_tab]
                     self.schools[selected_tab].outside += 1
 
                 tableWidget.removeRow(selected_row)
@@ -91,7 +95,7 @@ class WorkingField(QtWidgets.QWidget):
 
             if isinstance(teacher, TeacherExternal):
                 self.set_external_row(teacher)
-                if '미지정' in teacher.name:
+                if '미충원' in teacher.type:
                     self.schools[selected_tab].term -= 1
                 else:
                     self.schools[selected_tab].outside -= 1
@@ -113,13 +117,27 @@ class WorkingField(QtWidgets.QWidget):
                         gone_widget.pop(item.row())
                         break
 
-                if '만기' not in teacher.type or '비정기' not in teacher.type:
-                    self.schools[self.hash_schools.get(teacher.school)-1].gone -= 1
-                self.tabChanged(self.hash_schools.get(teacher.school)-1)
+                if '만기' not in teacher.type and '비정기' not in teacher.type:
+                    self.schools[self.hash_schools.get(teacher.school) - 1].gone -= 1
+                self.tabChanged(self.hash_schools.get(teacher.school) - 1)
 
             teacher.disposed = None
             cur_widget.designedTableWidget.clearSelection()
             self.tabChanged(selected_tab)
+
+    @pyqtSlot()
+    def add_temp(self):
+        selected_tab = self.ui.schoolListWidget.currentRow()
+        teacher = TeacherExternal(id=-1, rank='', type='미충원', region='', position='', school='',
+                                  name='미충원', birth='', sex='', major='', career='',
+                                  first='', second='', third='', ab_type='', ab_start='',
+                                  ab_end='', related_school='', relation='', relation_person='',
+                                  address='', phone='', email='', vehicle='', remarks='')
+        cur_widget = self.ui.stackedWidget.currentWidget()
+        self.schools[selected_tab].term += 1
+        teacher.disposed = self.schools[selected_tab]
+        cur_widget.add_item(teacher)
+        self.tabChanged(selected_tab)
 
     @pyqtSlot(int)
     def tabChanged(self, index):
@@ -129,6 +147,30 @@ class WorkingField(QtWidgets.QWidget):
         self.ui.label_inside.setText('%d' % self.schools[index].inside)
         self.ui.label_outside.setText('%d' % self.schools[index].outside)
         # self.controller.print_state()
+
+    @pyqtSlot(int, )
+    def teacherInfoChanged(self, row):
+        self.ui.teacherInfoEdit.clear()
+
+        print('{}'.format(self.ui.unspecified_tabWidget.currentIndex()))
+
+        try:
+            if self.ui.unspecified_tabWidget.currentIndex() == 0:
+                teacher = self.ui.tableWidget_internal.item(row, 2).data(Qt.UserRole)
+            else:
+                teacher = self.ui.tableWidget_external.item(row, 4).data(Qt.UserRole)
+
+            self.ui.teacherInfoEdit.append(teacher.__str__())
+
+        except AttributeError as e:
+            print(e)
+
+        except Exception as e:
+            print(e)
+
+    @pyqtSlot()
+    def update_file(self):
+        self.controller.update()
 
     @pyqtSlot()
     def save(self):
@@ -142,25 +184,12 @@ class WorkingField(QtWidgets.QWidget):
             print(e)
         # controller.save_file(self, self.designation, self.schools, self.teachers_internal, self.teachers_external)
 
-    @pyqtSlot(int,)
-    def teacherInfoChanged(self, row):
-        self.ui.teacherInfoEdit.clear()
-
-        print('{}'.format(self.ui.unspecified_tabWidget.currentIndex()))
-
-        if self.ui.unspecified_tabWidget.currentIndex() == 0:
-            teacher = self.ui.tableWidget_internal.item(row, 2).data(Qt.UserRole)
-        else:
-            teacher = self.ui.tableWidget_external.item(row, 4).data(Qt.UserRole)
-
-        self.ui.teacherInfoEdit.append(teacher.__str__())
-
     def set_up_ui(self):
 
         for t in self.teachers_internal:
             if t.disposed is not None:
-                self.designation[self.hash_schools.get(t.disposed) - 1].append(t)
-                self.gone[self.hash_schools.get(t.school)-1].append(t)
+                self.designation[self.hash_schools.get(t.disposed.name) - 1].append(t)
+                self.gone[self.hash_schools.get(t.school) - 1].append(t)
         #         self.teachers_internal.remove(t)
         #
         # print()
@@ -282,10 +311,8 @@ class WorkingField(QtWidgets.QWidget):
                 i += 1
 
     def moveTo(self, teacher):
-        school_num = self.hash_schools.get(teacher.disposed)-1
+        school_num = self.hash_schools.get(teacher.disposed.name) - 1
         self.ui.schoolListWidget.setCurrentRow(school_num)
-
-        # self.ui.stackedWidget.currentWidge
 
         table_widget = self.ui.stackedWidget.widget(school_num).designedTableWidget
         items = table_widget.findItems('{}'.format(teacher.name), Qt.MatchExactly)
@@ -310,3 +337,6 @@ class WorkingField(QtWidgets.QWidget):
         msg_box.setText(msg)
         msg_box.setStandardButtons(QMessageBox.Ok)
         result = msg_box.exec_()
+
+    def show_dialog_exit(self):
+        self.controller.show_dialog_exit()

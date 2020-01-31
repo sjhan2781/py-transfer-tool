@@ -1,7 +1,7 @@
 import os
 
-from PyQt5.QtCore import QObject, pyqtSlot
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QObject, pyqtSlot, qDebug
+from PyQt5.QtWidgets import QMessageBox, QApplication
 from openpyxl import load_workbook
 
 from loadingwidget import LoadingWidget
@@ -13,6 +13,8 @@ from start_view import StartView
 from tableWidget import WorkingField
 from teacher_external import TeacherExternal
 from teacher_internal import TeacherInternal
+from updatethread import UpdatingThread
+from updatingwidget import UpdatingWidget
 
 
 class StartController(QObject):
@@ -49,10 +51,18 @@ class StartController(QObject):
                                         priority=self.priority_list,
                                         designation=self.designation,
                                         gone=self.gone,
-                                        internal_file_url=self.internal_file_url,
-                                        external_file_url=self.external_file_url,
-                                        school_file_url=self.school_file_url,
                                         controller=self)
+
+        self.update_thread = UpdatingThread(internal=self.internal_list,
+                                            external=self.external_list,
+                                            schools=self.school_list,
+                                            hash_schools=self.hash_schools,
+                                            invited=self.invited_list,
+                                            priority=self.priority_list,
+                                            internal_file_url=self.internal_file_url,
+                                            external_file_url=self.external_file_url,
+                                            school_file_url=self.school_file_url,
+                                            controller=self)
 
         self.loading_post = LoadingWidget(**{'controller': self,
                                              'title': '기다려주세요..',
@@ -70,6 +80,14 @@ class StartController(QObject):
                                             'designation': self.designation,
                                             'gone': self.gone})
 
+        self.waiting_update = UpdatingWidget(**{'controller': self,
+                                                'title': '저장중입니다..',
+                                                'internal': self.internal_list,
+                                                'schools': self.school_list,
+                                                'external': self.external_list,
+                                                'invited': self.invited_list,
+                                                'priority': self.priority_list})
+
         self.init_thread()
 
         self.flag_internal = False
@@ -81,19 +99,24 @@ class StartController(QObject):
         self.post_thread.finished.connect(self.loading_post.close)
         self.post_thread.finished.connect(self.show_next_view)
 
-        self.save_thread.show_msg_box.connect(self.show_msg_box)
-        self.save_thread.finished.connect(self.waiting_save.close)
+        self.update_thread.show_msg_box.connect(self.show_msg_box)
+        self.update_thread.started.connect(self.waiting_update.show)
+        self.update_thread.started.connect(self.waiting_update.set_maximum)
+        self.update_thread.set_state_internal.connect(self.waiting_update.ui.progressBar_internal.setValue)
+        self.update_thread.set_state_external.connect(self.waiting_update.ui.progressBar_external.setValue)
+        self.update_thread.set_state_school.connect(self.waiting_update.ui.progressBar_school.setValue)
+        self.update_thread.finished.connect(self.waiting_update.close)
 
+        self.save_thread.show_msg_box.connect(self.show_msg_box)
         self.save_thread.started.connect(self.waiting_save.show)
         self.save_thread.started.connect(self.waiting_save.set_maximum)
-        self.save_thread.set_state_internal.connect(self.waiting_save.ui.progressBar_internal.setValue)
-        self.save_thread.set_state_external.connect(self.waiting_save.ui.progressBar_external.setValue)
-        self.save_thread.set_state_school.connect(self.waiting_save.ui.progressBar_school.setValue)
         self.save_thread.set_state_result.connect(self.waiting_save.ui.progressBar_result.setValue)
+        self.save_thread.finished.connect(self.waiting_save.close)
 
     def get_internal_list(self, file_url):
         self.internal_list.clear()
         self.invited_list.clear()
+        self.priority_list.clear()
         self.internal_file_url = file_url
 
         fname, ext = os.path.splitext(file_url)
@@ -111,10 +134,16 @@ class StartController(QObject):
             for row in ws.iter_rows(min_row=6):
                 if row[0].value is None:
                     break
-                t = TeacherInternal(id=i, rank=row[0], school=row[1], region_grade=row[2], position=row[3],
-                                    name=row[4], sex=row[5], regist_num=row[6], type=row[9], transfer_year=row[23],
-                                    transfer_score=row[30], first=row[24], second=row[25], third=row[26],
-                                    date=row[8], remarks=row[27], disposed=row[31])
+                t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
+                                    position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
+                                    type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
+                                    first=row[24].value, second=row[25].value, third=row[26].value,
+                                    date=row[8].value, remarks=row[27].value, disposed=None) 
+                # 임지지정 후 불러오기...
+                # t = TeacherInternal(id=i, rank=row[0], school=row[1], region_grade=row[2], position=row[3],
+                #                     name=row[4], sex=row[5], regist_num=row[6], type=row[9], transfer_year=row[23],
+                #                     transfer_score=row[30], first=row[24], second=row[25], third=row[26],
+                #                     date=row[8], remarks=row[27], disposed=row[31])
 
                 if '우대' in t.type:
                     self.priority_list.append(t)
@@ -128,10 +157,16 @@ class StartController(QObject):
                 if row[0].value is None:
                     break
 
-                t = TeacherInternal(id=i, rank=row[0], school=row[1], region_grade=row[2], position=row[3],
-                                    name=row[4], sex=row[5], regist_num=row[6], type=row[9], transfer_year=row[23],
-                                    transfer_score=row[30], first=row[24], second=row[25], third=row[26],
-                                    date=row[8], remarks=row[27], disposed=row[31])
+                t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
+                                    position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
+                                    type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
+                                    first=row[24].value, second=row[25].value, third=row[26].value,
+                                    date=row[8].value, remarks=row[27].value, disposed=None)
+                # 임지지정 후 불러오기...
+                # t = TeacherInternal(id=i, rank=row[0], school=row[1], region_grade=row[2], position=row[3],
+                #                     name=row[4], sex=row[5], regist_num=row[6], type=row[9], transfer_year=row[23],
+                #                     transfer_score=row[30], first=row[24], second=row[25], third=row[26],
+                #                     date=row[8], remarks=row[27], disposed=row[31])
 
                 self.invited_list.append(t)
                 i += 1
@@ -142,10 +177,16 @@ class StartController(QObject):
                 if row[0].value is None:
                     break
 
-                t = TeacherInternal(id=i, rank=row[0], school=row[1], region_grade=row[2], position=row[3],
-                                    name=row[4], sex=row[5], regist_num=row[6], type=row[9], transfer_year=row[23],
-                                    transfer_score=row[30], first=row[24], second=row[25], third=row[26],
-                                    date=row[8], remarks=row[27], disposed=row[31])
+                t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
+                                    position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
+                                    type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
+                                    first=row[24].value, second=row[25].value, third=row[26].value,
+                                    date=row[8].value, remarks=row[27].value, disposed=None)
+                # 임지지정 후 불러오기...
+                # t = TeacherInternal(id=i, rank=row[0], school=row[1], region_grade=row[2], position=row[3],
+                #                     name=row[4], sex=row[5], regist_num=row[6], type=row[9], transfer_year=row[23],
+                #                     transfer_score=row[30], first=row[24], second=row[25], third=row[26],
+                #                     date=row[8], remarks=row[27], disposed=row[31])
 
                 self.internal_list.append(t)
                 i += 1
@@ -155,7 +196,7 @@ class StartController(QObject):
         except TypeError as e:
             print(e)
             print(t.id)
-            self.show_msg_box("{}시트 {}번 행 서식을 확인해주세요.".format(ws.title, i+6), True)
+            self.show_msg_box("{}시트 {}번 행 서식을 확인해주세요.".format(ws.title, i + 6), True)
             self.flag_internal = False
 
         except KeyError as e:
@@ -195,13 +236,18 @@ class StartController(QObject):
                     break
 
                 # print('{}'.format(row[51].internal_value))
-                self.school_list.append(SchoolStatus(num=row[0], name=row[2], status=row[51],
-                                                     outside=row[55], inside=row[53], gone=row[52], term=row[63]))
+                self.school_list.append(SchoolStatus(num=row[0].value, name=row[2].value, status=row[51].value,
+                                                     outside=0, inside=0, gone=0, term=0, area=row[1].value))
+
+                # 불러오기 할 때
+                # self.school_list.append(SchoolStatus(num=row[0].value, name=row[2].value, status=row[51].value,
+                #                                      outside=row[55].value, inside=row[53].value, gone=row[52].value,
+                #                                      term=row[63].value, area=row[1].value))
                 self.hash_schools[row[2].value] = row[0].internal_value
                 self.designation.append([])
                 self.gone.append([])
+                print(self.school_list[i])
                 i += 1
-
         except TypeError as e:
             print(e)
             self.show_msg_box("{}번째 행 서식을 확인해주세요.".format(i + 8), True)
@@ -209,7 +255,7 @@ class StartController(QObject):
 
         except KeyError as e:
             print(e)
-            self.show_msg_box("시트 이름을 확인해주세요.".format(t.id + 1), True)
+            self.show_msg_box("시트 이름을 확인해주세요.", True)
             self.flag_internal = False
 
         except Exception as e:
@@ -247,16 +293,18 @@ class StartController(QObject):
                 if row[0].value is None:
                     break
 
-                if '미지정' in row[4].value:
-                    type = '미지정'
+                if '미충원' in row[4].value:
+                    type = '미충원'
                 else:
                     type = '타시군전입'
 
-                t = TeacherExternal(id=i, rank=row[0], type=type, region=row[1], position=row[2], school=row[3],
-                                    name=row[4], birth=row[5], sex=row[6], major=row[8], career=row[7],
-                                    first=row[9], second=row[10], third=row[11], ab_type=row[12], ab_start=row[13],
-                                    ab_end=row[14], related_school=row[15], relation=row[16], relation_person=row[17],
-                                    address=row[18], phone=row[19], email=row[20], vehicle=row[21], remarks=row[22])
+                t = TeacherExternal(id=i, rank=row[0].value, type=type, region=row[1].value, position=row[3].value,
+                                    school=row[2].value, name=row[4].value, birth=row[5].value, sex=row[6].value,
+                                    major=row[8].value, career=row[7].value, first=row[9].value, second=row[10].value,
+                                    third=row[11].value, ab_type=row[12].value, ab_start=row[13].value,
+                                    ab_end=row[14].value, related_school=row[15].value, relation=row[16].value,
+                                    relation_person=row[17].value, address=row[18].value, phone=row[19].value,
+                                    email=row[21].value, vehicle=row[22].value, remarks=row[23].value)
 
                 self.external_list.append(t)
                 i += 1
@@ -325,11 +373,16 @@ class StartController(QObject):
                                   controller=self, )
 
     def save(self, file_url):
-        self.save_thread.internal_file_url = self.internal_file_url
-        self.save_thread.external_file_url = self.external_file_url
-        self.save_thread.school_file_url = self.school_file_url
         self.save_thread.result_file_url = file_url
         self.save_thread.start()
+
+    def update(self):
+        self.update_thread.invited = self.invited_list
+        self.update_thread.priority = self.priority_list
+        self.update_thread.internal_file_url = self.internal_file_url
+        self.update_thread.external_file_url = self.external_file_url
+        self.update_thread.school_file_url = self.school_file_url
+        self.update_thread.start()
 
     def show_msg_box(self, msg, is_error):
         msg_box = QMessageBox()
@@ -343,3 +396,14 @@ class StartController(QObject):
         msg_box.setWindowTitle("")
         msg_box.setStandardButtons(QMessageBox.Ok)
         result = msg_box.exec()
+
+    def show_dialog_exit(self):
+        msg_box = QMessageBox()
+        msg_box.setWindowTitle("")
+        msg_box.setText('종료하시겠습니까?')
+        msg_box.setIcon(QMessageBox.Question)
+        msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.No)
+        result = msg_box.exec_()
+
+        if result == QMessageBox.Ok:
+            QApplication.quit()

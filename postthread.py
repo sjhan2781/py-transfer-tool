@@ -25,18 +25,26 @@ class PostingThread(QtCore.QThread):
         print('internal {} school {} external {}'
                     .format(self.internal.__len__(), self.schools.__len__(), self.external.__len__()))
 
-        for teacher in self.priority:
-            if '만기' in teacher.type:
-                self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
+        # for teacher in self.priority:
+        #     if teacher.disposed is not None:
+        #         if '만기' in teacher.type:
+        #             self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
 
-        for teacher in self.internal:
-            if '만기' in teacher.type or '비정기' in teacher.type:
-                self.schools[self.hash_schools.get(teacher.school)-1].gone += 1
-
+        # for teacher in self.internal:
+        #     if teacher.disposed is not None:
+        #         if '만기' in teacher.type or '비정기' in teacher.type:
+        #             self.schools[self.hash_schools.get(teacher.school)-1].gone += 1
 
         # self.internal.insert(0, self.priority)
         # self.internal.insert(0, self.invited)
         self.internal = self.invited + self.priority + self.internal
+
+        for teacher in self.internal:
+            if teacher.disposed is not None:
+                teacher.disposed = self.schools[self.hash_schools.get(teacher.disposed)-1]
+            else:
+                if '만기' in teacher.type or '비정기' in teacher.type:
+                    self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
 
     def post_invited(self):
         self.post_by_first(self.invited)
@@ -55,7 +63,7 @@ class PostingThread(QtCore.QThread):
                 desired_school_num = self.hash_schools.get(teacher.first) - 1
 
                 if self.schools[desired_school_num].get_state() < 0:
-                    teacher.disposed = teacher.first
+                    teacher.disposed = self.schools[desired_school_num]
                     self.schools[desired_school_num].inside += 1
 
                     if '일반' in teacher.type:
@@ -71,11 +79,10 @@ class PostingThread(QtCore.QThread):
                 continue
 
             if teacher.second is not None:
-                pre_school_num = self.hash_schools.get(teacher.school) - 1
                 desired_school_num = self.hash_schools.get(teacher.second) - 1
 
                 if self.schools[desired_school_num].get_state() < 0:
-                    teacher.disposed = teacher.second
+                    teacher.disposed = self.schools[desired_school_num]
                     self.schools[desired_school_num].inside += 1
 
                     self.post_priority()
@@ -89,11 +96,10 @@ class PostingThread(QtCore.QThread):
                 continue
 
             if teacher.third is not None:
-                pre_school_num = self.hash_schools.get(teacher.school) - 1
                 desired_school_num = self.hash_schools.get(teacher.third) - 1
 
                 if self.schools[ desired_school_num].get_state() < 0:
-                    teacher.disposed = teacher.third
+                    teacher.disposed = self.schools[desired_school_num]
                     self.schools[desired_school_num].inside += 1
 
                     self.post_priority()

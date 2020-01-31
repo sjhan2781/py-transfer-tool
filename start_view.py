@@ -13,21 +13,12 @@ class StartView(QtWidgets.QWidget):
 
         self.ui = uic.loadUi("startWidget.ui", self)
 
-        # self.gui_thread.show_next_view.connect(self.controller.post)
-        # self.gui_thread.show_load_view.connect(self.loading.show)
-        # self.gui_thread.started.connect(self.hide)
-        # self.gui_thread.started.connect(self.loading.show)
-        # self.gui_thread.finished.connect(self.loading.close)
-        # self.gui_thread.finished.connect(self.controller.show_next_view)
-
-
     @pyqtSlot()
     def get_internal_list(self):
         # self.controller.get_internal_file(self)
         file_url = self.open_QFileDialog('관내 명부 파일을 선택해주세요')
         self.controller.get_internal_list(file_url)
         print('internal')
-
 
     @pyqtSlot()
     def get_school_status(self):

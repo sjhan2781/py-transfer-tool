@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1329</width>
+    <width>1280</width>
     <height>395</height>
    </rect>
   </property>
@@ -17,6 +17,16 @@
    <property name="horizontalSpacing">
     <number>15</number>
    </property>
+   <item row="0" column="1">
+    <widget class="QProgressBar" name="progressBar_internal">
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="font">
@@ -32,19 +42,10 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QProgressBar" name="progressBar_internal">
-     <property name="maximum">
-      <number>100</number>
-     </property>
+   <item row="1" column="1">
+    <widget class="QProgressBar" name="progressBar_external">
      <property name="value">
-      <number>100</number>
-     </property>
-     <property name="textVisible">
-      <bool>true</bool>
-     </property>
-     <property name="invertedAppearance">
-      <bool>false</bool>
+      <number>24</number>
      </property>
     </widget>
    </item>
@@ -63,8 +64,8 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QProgressBar" name="progressBar_external">
+   <item row="2" column="1">
+    <widget class="QProgressBar" name="progressBar_school">
      <property name="value">
       <number>24</number>
      </property>
@@ -82,35 +83,6 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QProgressBar" name="progressBar_school">
-     <property name="value">
-      <number>24</number>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="font">
-      <font>
-       <pointsize>20</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>배정결과</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QProgressBar" name="progressBar_result">
-     <property name="value">
-      <number>24</number>
      </property>
     </widget>
    </item>

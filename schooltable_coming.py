@@ -15,7 +15,7 @@ class SchoolTableComing(QtWidgets.QWidget):
         self.add_table_items(self.designation)
         self.parent = parent
 
-        self.ui.designedTableWidget.itemDoubleClicked.connect(self.get_row)
+        self.ui.designedTableWidget.itemDoubleClicked.connect(self.parent.delete)
 
     def set_row(self, teacher):
         self.ui.designedTableWidget.setSortingEnabled(False)
