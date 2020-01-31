@@ -62,31 +62,7 @@ class SchoolTableGone(QtWidgets.QWidget):
     def pop(self, index):
         teacher = self.ui.designedTableWidget.item(index, 2).data(Qt.UserRole)
         self.ui.designedTableWidget.removeRow(index)
-        return teacher
-        # if "타시군" in self.ui.designedTableWidget.item(index, 0).text():
-        #     return self.pop_external(index)
-        # else:
-        #     return self.pop_internal(index)
-
-    def pop_external(self, index):
-
-        teacher = self.ui.designedTableWidget.item(index, 2).data(Qt.UserRole)
-        self.ui.designedTableWidget.removeRow(index)
-
-        t = None
-        for tmp in self.gone:
-            if teacher == tmp:
-                if '타시군' in tmp.type:
-                    t = tmp
-                    self.gone.remove(t)
-                    break
-
-        return t
-
-    def pop_internal(self, index):
-
-        teacher = self.ui.designedTableWidget.item(index, 2).data(Qt.UserRole)
-        self.ui.designedTableWidget.removeRow(index)
+        self.gone.remove(teacher)
 
         return teacher
 

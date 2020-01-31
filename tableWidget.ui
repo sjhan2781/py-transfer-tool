@@ -78,7 +78,7 @@
           <string notr="true"/>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -176,9 +176,6 @@ QTableWidget::item:selected {
              </attribute>
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>false</bool>
-             </attribute>
-             <attribute name="verticalHeaderVisible">
-              <bool>true</bool>
              </attribute>
              <attribute name="verticalHeaderHighlightSections">
               <bool>false</bool>
@@ -308,9 +305,6 @@ QTableWidget::item:selected {
               <bool>true</bool>
              </attribute>
              <attribute name="horizontalHeaderHighlightSections">
-              <bool>false</bool>
-             </attribute>
-             <attribute name="verticalHeaderVisible">
               <bool>false</bool>
              </attribute>
              <attribute name="verticalHeaderHighlightSections">
