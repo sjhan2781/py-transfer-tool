@@ -4,14 +4,17 @@ from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSlot, QObject, pyqtSignal, QWaitCondition, QMutex
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
 
+import gui.start_widget_view
 
-class StartView(QtWidgets.QWidget):
+
+class StartView(gui.start_widget_view.Ui_Start, QtWidgets.QWidget):
     def __init__(self, controller, parent=None):
         super().__init__()
 
         self.controller = controller
 
-        self.ui = uic.loadUi("startWidget.ui", self)
+        self.setupUi(self)
+        # self = uic.loadUi("startWidget", self)
 
     @pyqtSlot()
     def get_internal_list(self):

@@ -1,7 +1,9 @@
 from PyQt5 import QtWidgets, uic
 
+import gui.updating_view
 
-class UpdatingWidget(QtWidgets.QDialog):
+
+class UpdatingWidget(gui.updating_view.Ui_Form, QtWidgets.QDialog):
 
     def __init__(self,  parent=None, **kwargs):
         QtWidgets.QDialog.__init__(self, parent)
@@ -13,13 +15,14 @@ class UpdatingWidget(QtWidgets.QDialog):
         self.schools = kwargs['schools']
         self.priority = kwargs['priority']
 
-        self.ui = uic.loadUi("updating.ui", self)
+        # self = uic.loadUi("updating", self)
+        self.setupUi(self)
 
-        self.ui.progressBar_internal.setValue(0)
-        self.ui.progressBar_external.setValue(0)
-        self.ui.progressBar_school.setValue(0)
+        self.progressBar_internal.setValue(0)
+        self.progressBar_external.setValue(0)
+        self.progressBar_school.setValue(0)
 
     def set_maximum(self):
-        self.ui.progressBar_internal.setMaximum(self.internal.__len__() + self.invited.__len__() + self.priority.__len__())
-        self.ui.progressBar_external.setMaximum(self.external.__len__())
-        self.ui.progressBar_school.setMaximum(self.schools.__len__())
+        self.progressBar_internal.setMaximum(self.internal.__len__() + self.invited.__len__() + self.priority.__len__())
+        self.progressBar_external.setMaximum(self.external.__len__())
+        self.progressBar_school.setMaximum(self.schools.__len__())

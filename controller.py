@@ -32,6 +32,8 @@ class StartController(QObject):
 
         self.designation = list()
         self.gone = list()
+        self.gone_external = list()
+        self.unDeployed = list()
 
         self.internal_file_url = None
         self.external_file_url = None
@@ -42,7 +44,8 @@ class StartController(QObject):
                                          schools=self.school_list,
                                          hash_schools=self.hash_schools,
                                          invited=self.invited_list,
-                                         priority=self.priority_list)
+                                         priority=self.priority_list,
+                                         gone_external=self.gone_external)
 
         self.save_thread = SavingThread(internal=self.internal_list,
                                         external=self.external_list,
@@ -52,6 +55,8 @@ class StartController(QObject):
                                         priority=self.priority_list,
                                         designation=self.designation,
                                         gone=self.gone,
+                                        gone_external=self.gone_external,
+                                        unDeployed=self.unDeployed,
                                         controller=self)
 
         self.update_thread = UpdatingThread(internal=self.internal_list,
@@ -79,7 +84,9 @@ class StartController(QObject):
                                             'external': self.external_list,
                                             'invited': self.invited_list,
                                             'designation': self.designation,
-                                            'gone': self.gone})
+                                            'gone': self.gone,
+                                            'gone_external': self.gone_external,
+                                            'unDeployed': self.unDeployed})
 
         self.waiting_update = UpdatingWidget(**{'controller': self,
                                                 'title': '저장중입니다..',
@@ -103,15 +110,15 @@ class StartController(QObject):
         self.update_thread.show_msg_box.connect(self.show_msg_box)
         self.update_thread.started.connect(self.waiting_update.show)
         self.update_thread.started.connect(self.waiting_update.set_maximum)
-        self.update_thread.set_state_internal.connect(self.waiting_update.ui.progressBar_internal.setValue)
-        self.update_thread.set_state_external.connect(self.waiting_update.ui.progressBar_external.setValue)
-        self.update_thread.set_state_school.connect(self.waiting_update.ui.progressBar_school.setValue)
+        self.update_thread.set_state_internal.connect(self.waiting_update.progressBar_internal.setValue)
+        self.update_thread.set_state_external.connect(self.waiting_update.progressBar_external.setValue)
+        self.update_thread.set_state_school.connect(self.waiting_update.progressBar_school.setValue)
         self.update_thread.finished.connect(self.waiting_update.close)
 
         self.save_thread.show_msg_box.connect(self.show_msg_box)
         self.save_thread.started.connect(self.waiting_save.show)
         self.save_thread.started.connect(self.waiting_save.set_maximum)
-        self.save_thread.set_state_result.connect(self.waiting_save.ui.progressBar_result.setValue)
+        self.save_thread.set_state_result.connect(self.waiting_save.progressBar_result.setValue)
         self.save_thread.finished.connect(self.waiting_save.close)
 
     def get_internal_list(self, file_url):
@@ -203,7 +210,7 @@ class StartController(QObject):
 
         except KeyError as e:
             print(e)
-            self.show_msg_box("시트 이름을 확인해주세요.", True)
+            self.show_msg_box("\'초등(학교별)\', \'초빙\', \'비정기\' 시트가 있는지 확인해주세요.", True)
             self.flag_internal = False
             wb.close()
 
@@ -248,6 +255,7 @@ class StartController(QObject):
                 self.hash_schools[row[2].value] = row[0].internal_value
                 self.designation.append([])
                 self.gone.append([])
+                self.unDeployed.append([])
                 print(self.school_list[i])
                 i += 1
         except TypeError as e:
@@ -258,7 +266,7 @@ class StartController(QObject):
 
         except KeyError as e:
             print(e)
-            self.show_msg_box("시트 이름을 확인해주세요.", True)
+            self.show_msg_box("\'결충원\' 시트가 있는지 확인해주세요.", True)
             self.flag_internal = False
             wb.close()
 
@@ -314,6 +322,26 @@ class StartController(QObject):
                 self.external_list.append(t)
                 i += 1
 
+            ws = wb['시흥전출']
+
+            i = 0
+
+            for row in ws.iter_rows(min_row=2):
+                if row[0].value is None:
+                    break
+
+                t = TeacherExternal(id=i, rank=0, type=row[0].value, region=row[1].value, position=None,
+                                    school=row[4].value, name=row[2].value, birth=None, sex=None,
+                                    major=None, career=None, first=None, second=None,
+                                    third=None, ab_type=None, ab_start=None,
+                                    ab_end=None, related_school=None, relation=None,
+                                    relation_person=None, address=None, phone=None,
+                                    email=None, vehicle=None, remarks=None)
+
+                t.disposed = row[1].value
+                self.gone_external.append(t)
+                i += 1
+
         except TypeError as e:
             print(e)
             self.show_msg_box("{}번째 행 서식을 확인해주세요.".format(i + 2), True)
@@ -322,7 +350,7 @@ class StartController(QObject):
 
         except KeyError as e:
             print(e)
-            self.show_msg_box("시트 이름을 확인해주세요.", True)
+            self.show_msg_box("\'배정전정리\' 시트가 있는지 확인해주세요.", True)
             self.flag_internal = False
             wb.close()
 
@@ -375,6 +403,7 @@ class StartController(QObject):
                                   hash_school=self.hash_schools,
                                   designation=self.designation,
                                   gone=self.gone,
+                                  unDeployed=self.unDeployed,
                                   priority=self.priority_list,
                                   controller=self, )
 

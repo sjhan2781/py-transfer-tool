@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
+    <width>1294</width>
     <height>694</height>
    </rect>
   </property>
@@ -19,7 +19,10 @@
   <property name="windowTitle">
    <string>배치</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,0,3">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,0,4">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <property name="spacing">
@@ -27,6 +30,9 @@
      </property>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <property name="spacing">
+        <number>10</number>
+       </property>
        <property name="topMargin">
         <number>0</number>
        </property>
@@ -40,6 +46,7 @@
          </property>
          <property name="font">
           <font>
+           <family>맑은 고딕</family>
            <pointsize>24</pointsize>
           </font>
          </property>
@@ -49,10 +56,54 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QLabel" name="label_15">
          <property name="font">
           <font>
-           <pointsize>24</pointsize>
+           <family>맑은 고딕</family>
+           <pointsize>18</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>총 미충원 수 :</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_total_term">
+         <property name="font">
+          <font>
+           <family>맑은 고딕</family>
+           <pointsize>18</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_10">
+         <property name="font">
+          <font>
+           <family>맑은 고딕</family>
+           <pointsize>18</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>명</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_add_term">
+         <property name="font">
+          <font>
+           <family>맑은 고딕</family>
+           <pointsize>20</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="text">
@@ -71,6 +122,7 @@
         <widget class="QTabWidget" name="unspecified_tabWidget">
          <property name="font">
           <font>
+           <family>맑은 고딕</family>
            <pointsize>24</pointsize>
           </font>
          </property>
@@ -78,7 +130,7 @@
           <string notr="true"/>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -459,7 +511,10 @@ QTableWidget::item:selected {
        </property>
        <property name="font">
         <font>
-         <pointsize>24</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>15</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="autoFillBackground">
@@ -486,7 +541,10 @@ QTableWidget::item:selected {
        </property>
        <property name="font">
         <font>
-         <pointsize>24</pointsize>
+         <family>맑은 고딕</family>
+         <pointsize>15</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -502,12 +560,27 @@ QTableWidget::item:selected {
       <number>0</number>
      </property>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,6,3,0,1,0,0,1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,3,0,0,0">
+       <property name="leftMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>5</number>
+       </property>
        <item>
         <widget class="QLabel" name="label_8">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
+           <family>맑은 고딕</family>
            <pointsize>24</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="text">
@@ -519,8 +592,10 @@ QTableWidget::item:selected {
         <widget class="QLabel" name="label_school_name">
          <property name="font">
           <font>
-           <family>굴림</family>
+           <family>맑은 고딕</family>
            <pointsize>24</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="layoutDirection">
@@ -530,19 +605,92 @@ QTableWidget::item:selected {
           <string>시흥장현초</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+         <property name="indent">
+          <number>10</number>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_4">
+        <widget class="QLabel" name="label_12">
          <property name="font">
           <font>
-           <pointsize>24</pointsize>
+           <family>맑은 고딕</family>
+           <pointsize>18</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="text">
-          <string>관내 전보:</string>
+          <string>결원 : </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_state">
+         <property name="font">
+          <font>
+           <family>맑은 고딕</family>
+           <pointsize>18</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_13">
+         <property name="font">
+          <font>
+           <family>맑은 고딕</family>
+           <pointsize>18</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>명</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_9">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <property name="leftMargin">
+        <number>30</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>5</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="font">
+          <font>
+           <family>맑은 고딕</family>
+           <pointsize>20</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>관내 전보 :</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -551,13 +699,25 @@ QTableWidget::item:selected {
        </item>
        <item>
         <widget class="QLabel" name="label_inside">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>24</pointsize>
+           <family>맑은 고딕</family>
+           <pointsize>20</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
          <property name="wordWrap">
           <bool>false</bool>
@@ -565,10 +725,13 @@ QTableWidget::item:selected {
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_6">
+        <widget class="QLabel" name="label_5">
          <property name="font">
           <font>
-           <pointsize>24</pointsize>
+           <family>맑은 고딕</family>
+           <pointsize>20</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="text">
@@ -580,11 +743,14 @@ QTableWidget::item:selected {
         <widget class="QLabel" name="label_2">
          <property name="font">
           <font>
-           <pointsize>24</pointsize>
+           <family>맑은 고딕</family>
+           <pointsize>20</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="text">
-          <string>관외 전보:</string>
+          <string>관외 전보 :</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -593,21 +759,90 @@ QTableWidget::item:selected {
        </item>
        <item>
         <widget class="QLabel" name="label_outside">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>24</pointsize>
+           <family>맑은 고딕</family>
+           <pointsize>20</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>0</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_5">
+        <widget class="QLabel" name="label_6">
          <property name="font">
           <font>
-           <pointsize>24</pointsize>
+           <family>맑은 고딕</family>
+           <pointsize>20</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>명</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_9">
+         <property name="font">
+          <font>
+           <family>맑은 고딕</family>
+           <pointsize>20</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>미충원 :</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_term">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <family>맑은 고딕</family>
+           <pointsize>20</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_11">
+         <property name="font">
+          <font>
+           <family>맑은 고딕</family>
+           <pointsize>20</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="text">
@@ -624,6 +859,15 @@ QTableWidget::item:selected {
        </property>
        <item>
         <widget class="QListWidget" name="schoolListWidget">
+         <property name="font">
+          <font>
+           <family>Nanum Gothic</family>
+           <pointsize>18</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
          <property name="styleSheet">
           <string notr="true">QListWidget{
 	border: 0px;
@@ -632,7 +876,9 @@ QTableWidget::item:selected {
      selection-background-color: rgb(220, 220, 220);
 	font: 18pt &quot;Nanum Gothic&quot;;
 }
-</string>
+QListWidget:item{
+	font: 18pt &quot;맑은 고딕&quot;;
+}</string>
          </property>
          <property name="sizeAdjustPolicy">
           <enum>QAbstractScrollArea::AdjustIgnored</enum>
@@ -657,7 +903,10 @@ QTableWidget::item:selected {
           <widget class="QLabel" name="label_3">
            <property name="font">
             <font>
+             <family>맑은 고딕</family>
              <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
             </font>
            </property>
            <property name="styleSheet">
@@ -684,7 +933,10 @@ QTableWidget::item:selected {
           <widget class="QLabel" name="label_7">
            <property name="font">
             <font>
+             <family>맑은 고딕</family>
              <pointsize>24</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
             </font>
            </property>
            <property name="styleSheet">
@@ -726,8 +978,14 @@ QTableWidget::item:selected {
          </property>
          <property name="font">
           <font>
+           <family>맑은 고딕</family>
            <pointsize>18</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
           <string>종료</string>
@@ -744,8 +1002,14 @@ QTableWidget::item:selected {
          </property>
          <property name="font">
           <font>
+           <family>맑은 고딕</family>
            <pointsize>18</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
           <string>저장
@@ -763,8 +1027,14 @@ QTableWidget::item:selected {
          </property>
          <property name="font">
           <font>
+           <family>맑은 고딕</family>
            <pointsize>18</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
+         </property>
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
           <string>저장
@@ -787,8 +1057,8 @@ QTableWidget::item:selected {
    <slot>add()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>682</x>
-     <y>263</y>
+     <x>685</x>
+     <y>247</y>
     </hint>
     <hint type="destinationlabel">
      <x>423</x>
@@ -803,8 +1073,8 @@ QTableWidget::item:selected {
    <slot>delete()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>723</x>
-     <y>473</y>
+     <x>685</x>
+     <y>481</y>
     </hint>
     <hint type="destinationlabel">
      <x>445</x>
@@ -839,8 +1109,8 @@ QTableWidget::item:selected {
      <y>314</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1256</x>
-     <y>351</y>
+     <x>1255</x>
+     <y>342</y>
     </hint>
    </hints>
   </connection>
@@ -855,8 +1125,8 @@ QTableWidget::item:selected {
      <y>570</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1256</x>
-     <y>604</y>
+     <x>1255</x>
+     <y>612</y>
     </hint>
    </hints>
   </connection>
@@ -935,8 +1205,8 @@ QTableWidget::item:selected {
      <y>163</y>
     </hint>
     <hint type="destinationlabel">
-     <x>115</x>
-     <y>179</y>
+     <x>116</x>
+     <y>129</y>
     </hint>
    </hints>
   </connection>
@@ -963,8 +1233,8 @@ QTableWidget::item:selected {
    <slot>teacherInfoChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>115</x>
-     <y>179</y>
+     <x>116</x>
+     <y>129</y>
     </hint>
     <hint type="destinationlabel">
      <x>233</x>
@@ -989,18 +1259,18 @@ QTableWidget::item:selected {
    </hints>
   </connection>
   <connection>
-   <sender>pushButton</sender>
+   <sender>btn_add_term</sender>
    <signal>clicked()</signal>
    <receiver>WorkingField</receiver>
    <slot>add_temp()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>553</x>
-     <y>95</y>
+     <x>538</x>
+     <y>38</y>
     </hint>
     <hint type="destinationlabel">
-     <x>661</x>
-     <y>87</y>
+     <x>486</x>
+     <y>6</y>
     </hint>
    </hints>
   </connection>

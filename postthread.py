@@ -12,6 +12,7 @@ class PostingThread(QtCore.QThread):
         self.hash_schools = kwargs['hash_schools']
         self.invited = kwargs['invited']
         self.priority = kwargs['priority']
+        self.gone_external = kwargs['gone_external']
 
     def run(self) -> None:
         self.post()
@@ -19,25 +20,25 @@ class PostingThread(QtCore.QThread):
     def post(self):
         self.before_post()
         self.post_invited()
-        self.post_priority()
+        # self.post_priority()
 
     def before_post(self):
         print('internal {} school {} external {}'
                     .format(self.internal.__len__(), self.schools.__len__(), self.external.__len__()))
 
-        # for teacher in self.priority:
-        #     if teacher.disposed is not None:
-        #         if '만기' in teacher.type:
-        #             self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
+        for teacher in self.invited:
+            if teacher.disposed is not None:
+                teacher.disposed = self.schools[self.hash_schools.get(teacher.disposed)-1]
+            else:
+                if '만기' in teacher.type or '비정기' in teacher.type:
+                    self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
 
-        # for teacher in self.internal:
-        #     if teacher.disposed is not None:
-        #         if '만기' in teacher.type or '비정기' in teacher.type:
-        #             self.schools[self.hash_schools.get(teacher.school)-1].gone += 1
-
-        # self.internal.insert(0, self.priority)
-        # self.internal.insert(0, self.invited)
-        self.internal = self.invited + self.priority + self.internal
+        for teacher in self.priority:
+            if teacher.disposed is not None:
+                teacher.disposed = self.schools[self.hash_schools.get(teacher.disposed)-1]
+            else:
+                if '만기' in teacher.type or '비정기' in teacher.type:
+                    self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
 
         for teacher in self.internal:
             if teacher.disposed is not None:
@@ -48,6 +49,7 @@ class PostingThread(QtCore.QThread):
 
     def post_invited(self):
         self.post_by_first(self.invited)
+        self.post_priority()
 
     def post_priority(self):
         self.post_by_first(self.priority)
@@ -66,9 +68,9 @@ class PostingThread(QtCore.QThread):
                     teacher.disposed = self.schools[desired_school_num]
                     self.schools[desired_school_num].inside += 1
 
-                    if '일반' in teacher.type:
+                    if '일반' in teacher.type or '초빙' in teacher.type:
                         self.schools[pre_school_num].gone += 1
-                    self.post_priority()
+                    self.post_invited()
                     return
 
         self.post_by_second(teachers)
@@ -85,7 +87,7 @@ class PostingThread(QtCore.QThread):
                     teacher.disposed = self.schools[desired_school_num]
                     self.schools[desired_school_num].inside += 1
 
-                    self.post_priority()
+                    self.post_invited()
                     return
 
         self.post_by_third(teachers)
@@ -102,7 +104,7 @@ class PostingThread(QtCore.QThread):
                     teacher.disposed = self.schools[desired_school_num]
                     self.schools[desired_school_num].inside += 1
 
-                    self.post_priority()
+                    self.post_invited()
                     return
 
         # self.post_by_second(teachers)

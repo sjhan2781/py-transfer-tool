@@ -35,7 +35,7 @@ class UpdatingThread(QtCore.QThread):
         self.is_error = False
         self.msg = ''
         self.time = None
-        self.directory = '/전보 결과/'
+        self.directory = '/전보 결과'
 
         # self.finished.connect(self.controller.show_msg_box)
 
@@ -46,6 +46,7 @@ class UpdatingThread(QtCore.QThread):
         self.is_error = False
         self.msg = ''
         self.time = '{} {}'.format(datetime.now().hour, datetime.now().minute)
+        self.directory = self.directory + '_' + self.time + '/'
 
         t1 = Thread(target=self.save_internal)
         t2 = Thread(target=self.save_schools)
@@ -68,29 +69,33 @@ class UpdatingThread(QtCore.QThread):
             dir = os.path.dirname(self.internal_file_url)
             fname, ext = os.path.splitext(os.path.basename(self.internal_file_url))
 
-            has_macro = False
+            # has_macro = False
+            #
+            # if 'xlsm' in ext:
+            #     has_macro = True
 
-            if 'xlsm' in ext:
-                has_macro = True
-
-            wb = load_workbook(filename=self.internal_file_url, keep_vba=has_macro)
+            wb = load_workbook(filename=self.internal_file_url, keep_vba=False)
             ws = [wb['초등(학교별)'], wb['비정기']]
             ws_invited = wb['초빙']
 
             fontStyle = Font(size="10")
             alignment = Alignment(horizontal='center', vertical='center')
+            patternFill = PatternFill(patternType='solid', fgColor=Color('FD7D82'))
+            # patternFill = PatternFill(patternType='solid', fgColor=Color('C2E7FF'))
 
             for i in range(0, ws.__len__()):
-                ws[i].merge_cells('AF4:AF5')
+                # ws[i].merge_cells('AF4:AF5')
                 ws[i]['AF4'].value = '임지지정'
                 ws[i]['AF4'].font = fontStyle
-                ws[i]['AF4'].fill = PatternFill(patternType='solid', fgColor=Color('C2E7FF'))
+                ws[i]['AF4'].fill = patternFill
+                ws[i]['AF5'].fill = patternFill
                 ws[i]['AF4'].alignment = alignment
 
-            ws_invited.merge_cells('AF4:AF5')
+            # ws_invited.merge_cells('AF4:AF5')
             ws_invited['AF4'].value = '임지지정'
             ws_invited['AF4'].font = fontStyle
-            ws_invited['AF4'].fill = PatternFill(patternType='solid', fgColor=Color('C2E7FF'))
+            ws_invited['AF4'].fill = patternFill
+            ws_invited['AF5'].fill = patternFill
             ws_invited['AF4'].alignment = alignment
 
             count = 0
@@ -107,6 +112,8 @@ class UpdatingThread(QtCore.QThread):
                 cell = ws[index].cell(row=self.internal[i].id + 6, column=32, value=value)
                 cell.font = fontStyle
                 cell.alignment = alignment
+                cell.fill = patternFill
+
                 count += 1
                 self.msleep(SLEEP)
                 self.set_state_internal.emit(count)
@@ -119,6 +126,8 @@ class UpdatingThread(QtCore.QThread):
                 cell = ws_invited.cell(row=self.invited[i].id + 6, column=32, value=value)
                 cell.font = fontStyle
                 cell.alignment = alignment
+                cell.fill = patternFill
+
                 count += 1
                 self.msleep(SLEEP)
                 self.set_state_internal.emit(count)
@@ -131,6 +140,8 @@ class UpdatingThread(QtCore.QThread):
                 cell = ws[0].cell(row=self.priority[i].id + 6, column=32, value=value)
                 cell.font = fontStyle
                 cell.alignment = alignment
+                cell.fill = patternFill
+
                 count += 1
                 self.msleep(SLEEP)
                 self.set_state_internal.emit(count)
@@ -148,25 +159,27 @@ class UpdatingThread(QtCore.QThread):
                 self.msg += ', '
             self.msg += '관내명부'
             wb.close()
+        else:
+            wb.close()
 
     def save_external(self):
         try:
             dir = os.path.dirname(self.external_file_url)
             fname, ext = os.path.splitext(os.path.basename(self.external_file_url))
 
-            has_macro = False
+            # has_macro = False
+            #
+            # if 'xlsm' in ext:
+            #     has_macro = True
 
-            if 'xlsm' in ext:
-                has_macro = True
-
-            wb = load_workbook(self.external_file_url, keep_vba=has_macro)
+            wb = load_workbook(self.external_file_url, keep_vba=False)
             ws = wb['순위명부']
 
             fontStyle = Font(size="8")
 
             count = 0
             for i in range(0, self.external.__len__()):
-                if self.external[i].disposed is None:
+                if self.external[i].disposed is None or '미충원' in self.external[i].type:
                     school_name = ''
                     school_area = ''
                 else:
@@ -182,8 +195,7 @@ class UpdatingThread(QtCore.QThread):
 
             if not os.path.exists((dir + self.directory)):
                 os.makedirs(dir+self.directory)
-            wb.save(dir + self.directory + fname + '_결과' + self.time + ext)
-
+            wb.save(dir + self.directory + fname + '_결과' + self.time + '.xlsx')
             print("external saved")
 
         except Exception as e:
@@ -193,18 +205,20 @@ class UpdatingThread(QtCore.QThread):
                 self.msg += ', '
             self.msg += '관외명부'
             wb.close()
+        else:
+            wb.close()
 
     def save_schools(self):
         try:
             dir = os.path.dirname(self.school_file_url)
             fname, ext = os.path.splitext(os.path.basename(self.school_file_url))
 
-            has_macro = False
+            # has_macro = False
+            #
+            # if 'xlsm' in ext:
+            #     has_macro = True
 
-            if 'xlsm' in ext:
-                has_macro = True
-
-            wb = load_workbook(self.school_file_url, keep_vba=has_macro)
+            wb = load_workbook(self.school_file_url, keep_vba=False)
             ws = wb['결충원']
 
             fontStyle = Font(size="8")
@@ -236,4 +250,6 @@ class UpdatingThread(QtCore.QThread):
             if self.msg:
                 self.msg += ', '
             self.msg += '결충원'
+            wb.close()
+        else:
             wb.close()
