@@ -1,18 +1,9 @@
-import os
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMessageBox
-from openpyxl import load_workbook
+from PyQt5.QtWidgets import QApplication
 
 from controller import StartController
-from loadingwidget import LoadingWidget
-from postthread import PostingThread
-from savethread import SavingThread
-from schoolstatus import SchoolStatus
 from start_view import StartView
-from tableWidget import WorkingField
-from teacher_external import TeacherExternal
-from teacher_internal import TeacherInternal
 
 
 class App(QApplication):

@@ -1,4 +1,4 @@
-from none_checker import NoneChecker
+from checker.none_checker import NoneChecker
 
 
 class SchoolStatus:

@@ -1,8 +1,8 @@
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QAbstractItemView, QTableWidgetItem
 import custom_widget_item as custom
-from teacher_internal import TeacherInternal
+from model.teacher_internal import TeacherInternal
 
 import gui.schooltable_gone_view
 

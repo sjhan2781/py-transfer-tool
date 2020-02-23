@@ -5,7 +5,7 @@ from openpyxl.styles import Font, Alignment, PatternFill, Color, Border, Side
 from openpyxl.worksheet.page import PageMargins
 from openpyxl.worksheet.pagebreak import Break
 
-from teacher_external import TeacherExternal
+from model.teacher_external import TeacherExternal
 
 SLEEP = 1
 PAGE_BREAK = 26

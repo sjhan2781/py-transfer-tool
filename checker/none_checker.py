@@ -1,7 +1,7 @@
-from checker import Checker
+from checker.basechecker import BaseChecker
 
 
-class NoneChecker(Checker):
+class NoneChecker(BaseChecker):
 
     @staticmethod
     def check_valid(self, value):

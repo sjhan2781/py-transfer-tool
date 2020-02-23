@@ -1,19 +1,18 @@
 import os
 
-from PyQt5.QtCore import QObject, pyqtSlot, qDebug
+from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QMessageBox, QApplication
 from openpyxl import load_workbook
-from openpyxl.utils.exceptions import InvalidFileException
 
 from loadingwidget import LoadingWidget
 from postthread import PostingThread
 from savethread import SavingThread
 from savingwidget import SavingWidget
-from schoolstatus import SchoolStatus
+from model.schoolstatus import SchoolStatus
 from start_view import StartView
-from tableWidget import WorkingField
-from teacher_external import TeacherExternal
-from teacher_internal import TeacherInternal
+from workingfield import WorkingField
+from model.teacher_external import TeacherExternal
+from model.teacher_internal import TeacherInternal
 from updatethread import UpdatingThread
 from updatingwidget import UpdatingWidget
 
@@ -34,12 +33,15 @@ class StartController(QObject):
         self.gone = list()
         self.gone_external = list()
         self.unDeployed = list()
+        self.recruit = list()
+        self.vacancy = list()
 
         self.internal_file_url = None
         self.external_file_url = None
         self.school_file_url = None
 
-        self.post_thread = PostingThread(internal=self.internal_list,
+        self.post_thread = PostingThread(controller=self,
+                                         internal=self.internal_list,
                                          external=self.external_list,
                                          schools=self.school_list,
                                          hash_schools=self.hash_schools,
@@ -105,7 +107,8 @@ class StartController(QObject):
     def init_thread(self):
         self.post_thread.started.connect(self.loading_post.show)
         self.post_thread.finished.connect(self.loading_post.close)
-        self.post_thread.finished.connect(self.show_next_view)
+        self.post_thread.go_to_next.connect(self.show_next_view)
+        # self.post_thread.finished.connect(self.show_next_view)
 
         self.update_thread.show_msg_box.connect(self.show_msg_box)
         self.update_thread.started.connect(self.waiting_update.show)
@@ -239,7 +242,6 @@ class StartController(QObject):
             wb = load_workbook(file_url, data_only=True, keep_vba=has_macro, read_only=True)
             ws = wb['결충원']
 
-            i = 0
             for row in ws.iter_rows(min_row=8):
                 if row[0].value is None:
                     break
@@ -256,11 +258,34 @@ class StartController(QObject):
                 self.designation.append([])
                 self.gone.append([])
                 self.unDeployed.append([])
-                print(self.school_list[i])
-                i += 1
+                self.recruit.append([])
+                self.vacancy.append([])
+
+            ws = wb['결원내용']
+            for row in ws.iter_rows(min_row=4):
+                if row[0].value is None:
+                    break
+                teacher = TeacherInternal(id=row[0].value, rank=0, school=row[2].value, region_grade=None,
+                                    position=None, name=row[3].value, sex=None, regist_num=None,
+                                    type=row[4].value, transfer_year=None, transfer_score=None,
+                                    first=None, second=None, third=None,
+                                    date=None, remarks=None, disposed=None)
+                self.vacancy[self.hash_schools[row[2].value] - 1].append(teacher)
+
+            ws = wb['충원내용']
+            for row in ws.iter_rows(min_row=4):
+                if row[0].value is None:
+                    break
+                teacher = TeacherInternal(id=row[0].value, rank=0, school=row[2].value, region_grade=None,
+                                    position=None, name=row[3].value, sex=None, regist_num=None,
+                                    type=row[4].value, transfer_year=None, transfer_score=None,
+                                    first=None, second=None, third=None,
+                                    date=None, remarks=None, disposed=None)
+                self.recruit[self.hash_schools[row[2].value] - 1].append(teacher)
+
         except TypeError as e:
             print(e)
-            self.show_msg_box("{}번째 행 서식을 확인해주세요.".format(i + 8), True)
+            self.show_msg_box("셀 서식을 확인해주세요.", True)
             self.flag_internal = False
             wb.close()
 
@@ -390,6 +415,7 @@ class StartController(QObject):
             return False
 
     def start_program(self):
+        self.loading_post.show()
         self.post_thread.start()
 
     def show_next_view(self):
@@ -405,7 +431,12 @@ class StartController(QObject):
                                   gone=self.gone,
                                   unDeployed=self.unDeployed,
                                   priority=self.priority_list,
-                                  controller=self, )
+                                  controller=self,
+                                  vacancy=self.vacancy,
+                                  recruit=self.recruit)
+
+        self.field.set_up_ui()
+        self.field.showMaximized()
 
     def save(self, file_url):
         self.save_thread.result_file_url = file_url

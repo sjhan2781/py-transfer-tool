@@ -1,4 +1,5 @@
-from none_checker import NoneChecker
+from checker.none_checker import NoneChecker
+from checker.regist_num_checker import RegistNumChecker
 
 
 class TeacherInternal:
@@ -25,12 +26,10 @@ class TeacherInternal:
         self.remarks = kwargs['remarks']
         self.disposed = kwargs['disposed']
 
-        self.regist_num_str = str(self.regist_num)
-        self.birth_compare = (int(self.regist_num_str[0:6]) + 500000) % 1000000
+        # self.regist_num_str = str(self.regist_num)
+        # self.birth_compare = (int(self.regist_num_str[0:6]) + 500000) % 1000000
 
-        self.birth = '{}.{}.{}'.format(self.regist_num_str[0:2],
-                                       self.regist_num_str[2:4],
-                                       self.regist_num_str[4:6])
+        self.birth = RegistNumChecker.check_valid(self, kwargs['regist_num'])
 
     def __lt__(self, other):
         if self.transfer_year != other.transfer_year:
@@ -39,7 +38,7 @@ class TeacherInternal:
             if self.transfer_score != other.transfer_score:
                 return self.transfer_score > other.transfer_score
             else:
-                return self.birth_compare < other.birth_compare
+                return self.birth < other.birth
 
     def __str__(self) -> str:
         return '이름 = %-5s     전보유형 = %-s     성별 = %s\n' \
