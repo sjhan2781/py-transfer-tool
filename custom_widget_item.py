@@ -8,6 +8,8 @@ class StringItem(QTableWidgetItem):
         super().__init__()
         self.setText(value)
         self.setTextAlignment(Qt.AlignCenter)
+        if value is None:
+            value = ''
         self.updateValue(value)
 
     def __lt__(self, other):

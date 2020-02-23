@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1280</width>
+    <height>699</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0,1" columnstretch="5,2">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>24</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLabel{
+	color: rgb(37, 74, 133);
+}</string>
+     </property>
+     <property name="text">
+      <string>전입자</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="label_8">
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>24</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLabel{
+	color: rgb(235, 125, 60)
+}</string>
+     </property>
+     <property name="text">
+      <string>결원자</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="MoveInTable" name="move_in_table">
+     <property name="styleSheet">
+      <string notr="true">QHeaderView::section{
+	background-color	: rgb(51, 96, 149);
+	color: white;
+}
+
+QTableWidget{
+	background:rgb(255, 255, 255);
+	alternate-background-color:rgb(207, 222, 238);
+	selection-background-color:transparent;
+	show-decoration-selected:10;
+}
+
+QTableWidget::item:selected {
+	background-color: rgb(116, 158, 205);
+	color: white;
+}</string>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideMiddle</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>전보유형</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>소속</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>성명</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>성별</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>전보년수</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>1지망</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>2지망</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>3지망</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>비고</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="VacancyTable" name="vacancy_table">
+     <property name="styleSheet">
+      <string notr="true">QHeaderView::section{
+	background-color	: rgb(235, 125, 60);
+	color: white;
+}
+
+QTableWidget{
+	background:rgb(255, 255, 255);
+	alternate-background-color:rgb(251, 222, 209);
+	selection-background-color:transparent;
+	show-decoration-selected:10;
+}
+
+QTableWidget::item:selected {
+	background-color: rgb(220, 152, 151);
+	color: white;
+}</string>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideMiddle</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>결원사유</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>성명</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>소속</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>24</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLabel{
+	color: rgb(185, 60, 65)
+}</string>
+     </property>
+     <property name="text">
+      <string>전출자</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="label_4">
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>24</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLabel{
+	color: rgb(94, 156, 211);
+}</string>
+     </property>
+     <property name="text">
+      <string>충원자</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="MoveOutTable" name="move_out_table">
+     <property name="styleSheet">
+      <string notr="true">QHeaderView::section{
+	background-color	: rgb(197, 83, 85);
+	color: white;
+}
+
+QTableWidget{
+	background:rgb(255, 255, 255);
+	alternate-background-color:rgb(242, 220, 220);
+	selection-background-color:transparent;
+	show-decoration-selected:10;
+}
+
+QTableWidget::item:selected {
+	background-color: rgb(220, 152, 151);
+	color: white;
+}</string>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideMiddle</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>전보유형</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>소속</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>성명</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>성별</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>전보년수</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>1지망</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>2지망</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>3지망</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>임지지정</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="RecruitTable" name="recruit_table">
+     <property name="styleSheet">
+      <string notr="true">QHeaderView::section{
+	background-color	: rgb(94, 156, 211);
+	color: white;
+}
+
+QTableWidget{
+	background:rgb(255, 255, 255);
+	alternate-background-color:rgb(190, 215, 237);
+	selection-background-color:transparent;
+	show-decoration-selected:10;
+}
+
+QTableWidget::item:selected {
+	background-color: rgb(116, 158, 205);
+	color: white;
+}</string>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideMiddle</enum>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="rowCount">
+      <number>3</number>
+     </property>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <row/>
+     <row/>
+     <row/>
+     <column>
+      <property name="text">
+       <string>충원사유</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>성명</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>소속</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MoveInTable</class>
+   <extends>QTableWidget</extends>
+   <header>table_move_in.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MoveOutTable</class>
+   <extends>QTableWidget</extends>
+   <header>table_move_out.h</header>
+  </customwidget>
+  <customwidget>
+   <class>VacancyTable</class>
+   <extends>QTableWidget</extends>
+   <header>table_vacancy.h</header>
+  </customwidget>
+  <customwidget>
+   <class>RecruitTable</class>
+   <extends>QTableWidget</extends>
+   <header>table_recruit.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

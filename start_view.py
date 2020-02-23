@@ -4,22 +4,17 @@ from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtCore import pyqtSlot, QObject, pyqtSignal, QWaitCondition, QMutex
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
 
+import gui.start_widget_view
 
-class StartView(QtWidgets.QWidget):
-    def __init__(self, controller):
+
+class StartView(gui.start_widget_view.Ui_Start, QtWidgets.QWidget):
+    def __init__(self, controller, parent=None):
         super().__init__()
 
         self.controller = controller
 
-        self.ui = uic.loadUi("startWidget.ui", self)
-
-        # self.gui_thread.show_next_view.connect(self.controller.post)
-        # self.gui_thread.show_load_view.connect(self.loading.show)
-        # self.gui_thread.started.connect(self.hide)
-        # self.gui_thread.started.connect(self.loading.show)
-        # self.gui_thread.finished.connect(self.loading.close)
-        # self.gui_thread.finished.connect(self.controller.show_next_view)
-
+        self.setupUi(self)
+        # self = uic.loadUi("startWidget", self)
 
     @pyqtSlot()
     def get_internal_list(self):
@@ -27,7 +22,6 @@ class StartView(QtWidgets.QWidget):
         file_url = self.open_QFileDialog('관내 명부 파일을 선택해주세요')
         self.controller.get_internal_list(file_url)
         print('internal')
-
 
     @pyqtSlot()
     def get_school_status(self):
@@ -43,14 +37,8 @@ class StartView(QtWidgets.QWidget):
 
     @pyqtSlot()
     def start(self):
-        # msg = self.controller.is_valid()
-
         if self.controller.is_valid():
-            # self.loading.start()
-            # self.gui_thread.start()
-            # self.gui_thread.wait()
             self.controller.start_program()
-            # self.show_next_view()
             self.close()
         print('start')
 

@@ -3,7 +3,6 @@ import sys
 from PyQt5.QtWidgets import QApplication
 
 from controller import StartController
-from loadingwidget import LoadingWidget
 from start_view import StartView
 
 
@@ -14,10 +13,11 @@ class App(QApplication):
         self.main_controller = StartController()
         self.main_view = StartView(self.main_controller)
         # self.main_view = StartView()
-        self.main_view.show()
         # self.loading_view = LoadingWidgetTest("aaaa")
+        self.main_view.show()
 
 
 if __name__ == '__main__':
     app = App(sys.argv)
-    sys.exit(app.exec_())
+    app.exec()
+    # sys.exit(app.exec_())
