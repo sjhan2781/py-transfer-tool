@@ -143,16 +143,18 @@ class StartController(QObject):
             for row in ws.iter_rows(min_row=6):
                 if row[0].value is None:
                     break
+                # t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
+                #                     position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
+                #                     type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
+                #                     first=row[24].value, second=row[25].value, third=row[26].value,
+                #                     date=row[8].value, remarks=row[27].value, disposed=None)
+
+                # 임지지정 후 불러오기...
                 t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
                                     position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
                                     type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
                                     first=row[24].value, second=row[25].value, third=row[26].value,
-                                    date=row[8].value, remarks=row[27].value, disposed=None) 
-                # 임지지정 후 불러오기...
-                # t = TeacherInternal(id=i, rank=row[0], school=row[1], region_grade=row[2], position=row[3],
-                #                     name=row[4], sex=row[5], regist_num=row[6], type=row[9], transfer_year=row[23],
-                #                     transfer_score=row[30], first=row[24], second=row[25], third=row[26],
-                #                     date=row[8], remarks=row[27], disposed=row[31])
+                                    date=row[8].value, remarks=row[27].value, disposed=row[31].value)
 
                 if '우대' in t.type:
                     self.priority_list.append(t)
@@ -166,16 +168,18 @@ class StartController(QObject):
                 if row[0].value is None:
                     break
 
+                # t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
+                #                     position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
+                #                     type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
+                #                     first=row[24].value, second=row[25].value, third=row[26].value,
+                #                     date=row[8].value, remarks=row[27].value, disposed=None)
+
+                # 임지지정 후 불러오기...
                 t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
                                     position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
                                     type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
                                     first=row[24].value, second=row[25].value, third=row[26].value,
-                                    date=row[8].value, remarks=row[27].value, disposed=None)
-                # 임지지정 후 불러오기...
-                # t = TeacherInternal(id=i, rank=row[0], school=row[1], region_grade=row[2], position=row[3],
-                #                     name=row[4], sex=row[5], regist_num=row[6], type=row[9], transfer_year=row[23],
-                #                     transfer_score=row[30], first=row[24], second=row[25], third=row[26],
-                #                     date=row[8], remarks=row[27], disposed=row[31])
+                                    date=row[8].value, remarks=row[27].value, disposed=row[31].value)
 
                 self.invited_list.append(t)
                 i += 1
@@ -186,17 +190,18 @@ class StartController(QObject):
                 if row[0].value is None:
                     break
 
+                # t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
+                #                     position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
+                #                     type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
+                #                     first=row[24].value, second=row[25].value, third=row[26].value,
+                #                     date=row[8].value, remarks=row[27].value, disposed=None)
+
+                # 임지지정 후 불러오기...
                 t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
                                     position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
                                     type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
                                     first=row[24].value, second=row[25].value, third=row[26].value,
-                                    date=row[8].value, remarks=row[27].value, disposed=None)
-                # 임지지정 후 불러오기...
-                # t = TeacherInternal(id=i, rank=row[0], school=row[1], region_grade=row[2], position=row[3],
-                #                     name=row[4], sex=row[5], regist_num=row[6], type=row[9], transfer_year=row[23],
-                #                     transfer_score=row[30], first=row[24], second=row[25], third=row[26],
-                #                     date=row[8], remarks=row[27], disposed=row[31])
-
+                                    date=row[8].value, remarks=row[27].value, disposed=row[31].value)
                 self.internal_list.append(t)
                 i += 1
 
@@ -246,13 +251,14 @@ class StartController(QObject):
                     break
 
                 # print('{}'.format(row[51].internal_value))
-                self.school_list.append(SchoolStatus(num=row[0].value, name=row[2].value, status=row[51].value,
-                                                     outside=0, inside=0, gone=0, term=0, area=row[1].value))
+                # self.school_list.append(SchoolStatus(num=row[0].value, name=row[2].value, status=row[51].value,
+                #                                      outside=0, inside=0, gone=0, term=0, area=row[1].value))
 
                 # 불러오기 할 때
-                # self.school_list.append(SchoolStatus(num=row[0].value, name=row[2].value, status=row[51].value,
-                #                                      outside=row[55].value, inside=row[53].value, gone=row[52].value,
-                #                                      term=row[63].value, area=row[1].value))
+                self.school_list.append(SchoolStatus(num=row[0].value, name=row[2].value, status=row[51].value,
+                                                     outside=row[55].value, inside=row[53].value, gone=row[52].value,
+                                                     term=row[63].value, area=row[1].value))
+
                 self.hash_schools[row[2].value] = row[0].internal_value
                 self.designation.append([])
                 self.gone.append([])
@@ -349,6 +355,14 @@ class StartController(QObject):
 
                 self.external_list.append(t)
                 i += 1
+
+            ws = wb['순위명부']
+
+            for row in ws.iter_rows(min_row=3):
+                if row[0].value is None:
+                    break
+
+                self.external_list[row[0].value-1].disposed = row[10].value
 
             ws = wb['시흥전출']
 

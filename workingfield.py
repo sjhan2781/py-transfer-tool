@@ -185,6 +185,19 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
             else:
                 self.unDeployed[self.hash_schools.get(t.school) - 1].append(t)
 
+        for t in self.teachers_external:
+            if t.disposed is not None:
+                self.designation[self.hash_schools.get(t.disposed.name) - 1].append(t)
+
+        for s in self.schools:
+            for i in range(0, s.term):
+                teacher = TeacherExternal(id=-1, rank='', type='미충원', region='', position='', school='',
+                                          name='미충원', birth='', sex='', major='', career='',
+                                          first='', second='', third='', ab_type='', ab_start='',
+                                          ab_end='', related_school='', relation='', relation_person='',
+                                          address='', phone='', email='', vehicle='', remarks='')
+                self.designation[s.num - 1].append(teacher)
+
         for i in range(0, self.schools.__len__()):
             self.schoolListWidget.addItem(QListWidgetItem('%s (%d)' % (self.schools[i].name,
                                                                        self.schools[i].get_state())))
