@@ -7,8 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>1251</width>
-    <height>625</height>
+    <height>563</height>
    </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -28,6 +31,25 @@
    </property>
    <item row="0" column="0">
     <widget class="QTableWidget" name="designedTableWidget">
+     <property name="styleSheet">
+      <string notr="true">QHeaderView::section{
+	background-color	: rgb(51, 96, 149);
+	color: white;
+}
+
+QTableWidget{
+	background:rgb(255, 255, 255);
+	alternate-background-color:rgb(207, 222, 238);
+	selection-background-color:transparent;
+	show-decoration-selected:10;
+}
+
+QTableWidget::item:selected {
+	background-color: rgb(116, 158, 205);
+	color: white;
+	border: 2px solid rgb(116, 158, 205);
+}</string>
+     </property>
      <property name="sizeAdjustPolicy">
       <enum>QAbstractScrollArea::AdjustToContents</enum>
      </property>
@@ -48,6 +70,9 @@
      </property>
      <attribute name="horizontalHeaderCascadingSectionResizes">
       <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderHighlightSections">
+      <bool>false</bool>
      </attribute>
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
@@ -98,11 +123,6 @@
      <column>
       <property name="text">
        <string>비고</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>id</string>
       </property>
      </column>
     </widget>

@@ -6,12 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>614</width>
-    <height>635</height>
+    <width>838</width>
+    <height>694</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>맑은 고딕</family>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>시흥 전보</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget{
@@ -19,23 +24,57 @@
 }
 </string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,5,1,1">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,5,0,0,0" rowminimumheight="0,0,0,0,0">
    <property name="sizeConstraint">
     <enum>QLayout::SetDefaultConstraint</enum>
    </property>
-   <item>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="pushButton_4">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <family>맑은 고딕</family>
+       <pointsize>24</pointsize>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton{
+	background-color: rgb(253, 110, 115);
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 16px;
+    border-color: black;
+}
+QPushButton:pressed{
+	background-color: rgb(233, 90, 95);
+}</string>
+     </property>
+     <property name="text">
+      <string>관내전보 실행하기</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="font">
       <font>
-       <family>.AppleSystemUIFont</family>
-       <pointsize>13</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
+       <family>맑은 고딕</family>
+       <pointsize>40</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="styleSheet">
       <string notr="true">QLabel{
-	color: rgb(35, 0, 255);
+	color: rgb(0, 0, 0);
 }</string>
      </property>
      <property name="text">
@@ -46,41 +85,7 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QTextBrowser" name="textBrowser">
-     <property name="font">
-      <font>
-       <family>.AppleSystemUIFont</family>
-       <pointsize>13</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QTextEdit{
-
-}</string>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="html">
-      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:36pt;&quot;&gt;사용방법&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:24pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:24pt;&quot;&gt;1. &lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#5178ff;&quot;&gt;결충원 현황 불러오기&lt;/span&gt;&lt;span style=&quot; font-size:24pt;&quot;&gt;를 클릭하고 파일을 선택한다.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:24pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:24pt;&quot;&gt;2. &lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#50ff9e;&quot;&gt;순위명부 불러오기&lt;/span&gt;&lt;span style=&quot; font-size:24pt;&quot;&gt;를 클릭하고 파일을 선택한다.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:24pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:24pt;&quot;&gt;3. &lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#c74eff;&quot;&gt;타시군 전입명부 불러오기&lt;/span&gt;&lt;span style=&quot; font-size:24pt;&quot;&gt;를 클릭하고 파일을 선택한다.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:24pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:24pt;&quot;&gt;4. 불러온 파일에 이상이 없으면 &lt;/span&gt;&lt;span style=&quot; font-size:24pt; color:#fc545d;&quot;&gt;자동으로 배치하기&lt;/span&gt;&lt;span style=&quot; font-size:24pt;&quot;&gt;을 누른다.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:24pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-    </widget>
-   </item>
-   <item>
+   <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
      <property name="spacing">
       <number>30</number>
@@ -95,6 +100,7 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="font">
         <font>
+         <family>맑은 고딕</family>
          <pointsize>24</pointsize>
         </font>
        </property>
@@ -104,6 +110,11 @@ p, li { white-space: pre-wrap; }
        <property name="styleSheet">
         <string notr="true">QPushButton{
 	background-color:rgb(102, 147, 255);
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 16px;
+    border-color: black;
+	padding: 10px;
 }
 QPushButton:pressed{
 	background-color:rgb(82, 127, 235);
@@ -125,6 +136,7 @@ QPushButton:pressed{
        </property>
        <property name="font">
         <font>
+         <family>맑은 고딕</family>
          <pointsize>24</pointsize>
         </font>
        </property>
@@ -137,13 +149,18 @@ QPushButton:pressed{
        <property name="styleSheet">
         <string notr="true">QPushButton{
 	background-color: rgb(98, 249, 176);
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 16px;
+    border-color: black;
+	padding: 10px;
 }
 QPushButton:pressed{
-	background-color: rgb(78, 229, 156);
+	background-color: rgb(58, 209, 136);
 }</string>
        </property>
        <property name="text">
-        <string>순위명부
+        <string>관내순위명부
 불러오기 </string>
        </property>
        <property name="flat">
@@ -161,6 +178,7 @@ QPushButton:pressed{
        </property>
        <property name="font">
         <font>
+         <family>맑은 고딕</family>
          <pointsize>24</pointsize>
         </font>
        </property>
@@ -173,6 +191,11 @@ QPushButton:pressed{
        <property name="styleSheet">
         <string notr="true">QPushButton{
 	background-color: rgb(210, 116, 255);
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 16px;
+    border-color: black;
+	padding: 10px 10px 10px 10px;
 }
 QPushButton:pressed{
 	background-color: rgb(190, 96, 235);
@@ -186,32 +209,81 @@ QPushButton:pressed{
      </item>
     </layout>
    </item>
-   <item>
-    <widget class="QPushButton" name="pushButton_4">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+   <item row="1" column="0">
+    <widget class="QTextBrowser" name="textBrowser">
      <property name="font">
       <font>
-       <pointsize>24</pointsize>
+       <family>맑은 고딕</family>
+       <weight>75</weight>
+       <italic>false</italic>
+       <bold>true</bold>
       </font>
      </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
      <property name="styleSheet">
-      <string notr="true">QPushButton{
-	background-color: rgb(253, 110, 115);
+      <string notr="true">QTextEdit{
+	color: black;
+	background-color: white;
+    border-style: outset;
+    border-width: 1px;
+    border-radius: 16px;
+    border-color: black;
+	padding: 5px 3px 5px 16px;
 }
-QPushButton:pressed{
-	background-color: rgb(233, 90, 95);
-}</string>
+
+QScrollBar::handle:vertical {
+	background: rgb(211,211,211);
+	border-radius:6px;
+	width: 15px;
+	margin: 0px 2px 0px 2px;
+}
+
+QScrollBar::add-line:vertical {
+	height: 0px;
+	subcontrol-position: bottom;
+	subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+	height: 0px;
+	subcontrol-position: top;
+	subcontrol-origin: margin;
+}
+</string>
      </property>
-     <property name="text">
-      <string>자동으로 배치하기</string>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'맑은 고딕'; font-size:13pt; font-weight:600; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:36pt; font-weight:400; color:#ff0000;&quot;&gt;참고사항&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:16pt; font-weight:400; color:#ff0000;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:20pt;&quot;&gt;-올바른 파일을 선택하세요. 문구가 나옴&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;파일별 시트명 확인&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:400;&quot;&gt;결충원 현황 - 결충원&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:400;&quot;&gt;순위명부 - 초등(학교별)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:400;&quot;&gt;타시군 전입명부 - 배정전정리, 순위명부&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:400;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt; color:#ff0000;&quot;&gt;시트명이 다르면 파일이 추가되지 않음.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; color:#ff0000;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;*시트명이 같아도 오류가 발생할 때&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:400;&quot;&gt;오류가 있는 연결파일 삭제 후 저장&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:400; color:#ff0000;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:20pt; color:#000000;&quot;&gt;-배치하기 클릭 후 바로 종료되는 경우&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:400; color:#000000;&quot;&gt;파일들을 열고 다시 저장 한 후에 실행&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:400; color:#000000;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:20pt; color:#000000;&quot;&gt;-배치하기 클릭 후 응답없음&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:400; color:#000000;&quot;&gt;자동 배치에 시간이 걸리기 때문에 기다려주세요.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt; font-weight:400; color:#000000;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:20pt; color:#000000;&quot;&gt;-저장 클릭 후 응답없음&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:400; color:#000000;&quot;&gt;파일 업데이트와 저장을 하고있는 상태이므로&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:400; color:#000000;&quot;&gt;강제종료하지 마시고 기다려주세요.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="acceptRichText">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

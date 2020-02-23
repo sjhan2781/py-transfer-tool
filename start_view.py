@@ -49,14 +49,10 @@ class StartView(QtWidgets.QWidget):
             # self.loading.start()
             # self.gui_thread.start()
             # self.gui_thread.wait()
-            self.controller.start()
+            self.controller.start_program()
             # self.show_next_view()
             self.close()
         print('start')
-
-    @pyqtSlot()
-    def show_next_view(self):
-        self.controller.start()
 
     @staticmethod
     def open_QFileDialog(content):
