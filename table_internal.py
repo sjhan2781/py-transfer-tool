@@ -4,7 +4,6 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, Qt
 from PyQt5.QtWidgets import QWidget, QAbstractItemView
 import custom_widget_item as custom
-from table_layout.base_table_widget import BaseTable
 
 
 class InternalTable(QtWidgets.QTableWidget):
@@ -33,19 +32,30 @@ class InternalTable(QtWidgets.QTableWidget):
 
         self.setSortingEnabled(True)
 
-        self.resizeColumnsToContents()
-        self.resizeRowsToContents()
-        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
     @pyqtSlot()
-    def add_table_items(self, items):
+    def init_table_items(self, items):
         self.setRowCount(0)
 
-        for item in items:
-            self.set_row(item)
+        for teacher in items:
+            if teacher.disposed is None:
+                self.set_row(teacher)
+
+        # 내용에 맞춰 셀 크기 자동 조정
+        self.resizeColumnsToContents()
+        self.resizeRowsToContents()
+
+        # 수정 금지
+        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def add_item(self, teacher):
         self.set_row(teacher)
+
+        # 내용에 맞춰 셀 크기 자동 조정
+        self.resizeColumnsToContents()
+        self.resizeRowsToContents()
+
+        # 수정 금지
+        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def pop(self, index):
         teacher = self.item(index, 2).data(Qt.UserRole)

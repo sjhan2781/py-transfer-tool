@@ -1,4 +1,4 @@
-from checker.basechecker import BaseChecker
+from checker.base_checker import BaseChecker
 
 
 class NoneChecker(BaseChecker):

@@ -469,7 +469,7 @@ class Ui_WorkingField(object):
         self.schoolListWidget.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.schoolListWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.schoolListWidget.setAlternatingRowColors(True)
-        self.schoolListWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.schoolListWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
         self.schoolListWidget.setResizeMode(QtWidgets.QListView.Adjust)
         self.schoolListWidget.setObjectName("schoolListWidget")
         self.horizontalLayout_3.addWidget(self.schoolListWidget)

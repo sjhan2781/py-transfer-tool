@@ -1,7 +1,7 @@
 import gui.table_widget_view
 
 from PyQt5.QtCore import pyqtSlot, Qt
-from PyQt5.QtWidgets import QListWidgetItem, QMessageBox, QFileDialog, QAbstractItemView
+from PyQt5.QtWidgets import QListWidgetItem, QMessageBox, QFileDialog
 from PyQt5 import QtWidgets
 
 from schooltable import SchoolTable
@@ -24,14 +24,15 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
         self.recruit = kwargs['recruit']
         self.total_term = 0
 
+        # self = uic.loadUi("tableWidget", self)
         self.setupUi(self)
 
         self.tableWidget_internal.itemDoubleClicked.connect(self.add)
         self.tableWidget_external.itemDoubleClicked.connect(self.add)
 
-        # self.set_up_ui()
-        #
-        # self.showMaximized()
+        self.set_up_ui()
+        # self.close.connect(self.controller.show_dialog_exit)
+        self.showMaximized()
 
     @pyqtSlot()
     def add(self):
@@ -94,7 +95,7 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
             selected_tab = self.schoolListWidget.currentRow()
 
             if isinstance(teacher, TeacherExternal):
-                self.tableWidget_external.set_row(teacher)
+                self.tableWidget_external.add_item(teacher)
                 if '미충원' in teacher.type:
                     self.schools[selected_tab].term -= 1
                     self.total_term -= 1
@@ -102,10 +103,10 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
                     self.schools[selected_tab].outside -= 1
 
             else:
-                self.tableWidget_internal.set_row(teacher)
+                self.tableWidget_internal.add_item(teacher)
                 self.schools[selected_tab].inside -= 1
 
-                cur_widget.find_items_move_out(teacher)
+                cur_widget.pop_move_out_item(teacher)
 
                 if '만기' not in teacher.type and '비정기' not in teacher.type:
                     self.schools[self.hash_schools.get(teacher.school) - 1].gone -= 1
@@ -123,7 +124,6 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
                                   first='', second='', third='', ab_type='', ab_start='',
                                   ab_end='', related_school='', relation='', relation_person='',
                                   address='', phone='', email='', vehicle='', remarks='')
-
         cur_widget = self.stackedWidget.currentWidget()
         self.schools[selected_tab].term += 1
         self.total_term += 1
@@ -141,7 +141,6 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
         self.label_term.setText('%d' % self.schools[index].term)
         self.label_state.setText('%d' % self.schools[index].status)
         self.label_total_term.setText('%d' % self.total_term)
-        # self.controller.print_state()
         self.repaint()
 
     @pyqtSlot(int, )
@@ -178,6 +177,7 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
             print(e)
 
     def set_up_ui(self):
+
         for t in self.teachers_internal:
             if t.disposed is not None:
                 self.designation[self.hash_schools.get(t.disposed.name) - 1].append(t)
@@ -185,58 +185,24 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
             else:
                 self.unDeployed[self.hash_schools.get(t.school) - 1].append(t)
 
-        print("bbbbb")
         for i in range(0, self.schools.__len__()):
             self.schoolListWidget.addItem(QListWidgetItem('%s (%d)' % (self.schools[i].name,
                                                                        self.schools[i].get_state())))
             self.stackedWidget.addWidget(SchoolTable(parent=self, designation=self.designation[i], gone=self.gone[i],
                                                      vacancy=self.vacancy[i], recruit=self.recruit[i]))
-        print("cccc")
-        self.add_internal_table_items()
-        print("ddddd")
-        self.add_external_table_items()
+
+        self.tableWidget_internal.init_table_items(self.teachers_internal)
+        self.tableWidget_external.init_table_items(self.teachers_external)
+
         self.schoolListWidget.setCurrentRow(0)
         self.unspecified_tabWidget.setCurrentIndex(0)
 
-    def add_internal_table_items(self):
-        self.tableWidget_internal.setRowCount(0)
-
-        for teacher in self.teachers_internal:
-            if teacher.disposed is None:
-                self.tableWidget_internal.add_item(teacher)
-
-        self.tableWidget_internal.resizeColumnsToContents()
-        self.tableWidget_internal.resizeRowsToContents()
-        self.tableWidget_internal.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
-    def add_external_table_items(self):
-        self.tableWidget_external.setRowCount(0)
-
-        print("eeee")
-
-        for teacher in self.teachers_external:
-            if teacher.disposed is None:
-                self.tableWidget_external.add_item(teacher)
-        print("ffff")
-        self.tableWidget_external.resizeColumnsToContents()
-        self.tableWidget_external.resizeRowsToContents()
-        self.tableWidget_external.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
-    def moveTo(self, teacher):
-        school_num = self.hash_schools.get(teacher.disposed.name) - 1
+    def find_teacher(self, teacher):
+        school_num = teacher.disposed.num - 1
         self.schoolListWidget.setCurrentRow(school_num)
 
-        table_widget = self.stackedWidget.widget(school_num).designedTableWidget
-        items = table_widget.findItems('{}'.format(teacher.name), Qt.MatchExactly)
-
-        for item in items:
-            t = item.data(Qt.UserRole)
-            if t == teacher:
-                table_widget.setCurrentItem(item)
-                table_widget.setFocus()
-
-                widget = QtWidgets.QApplication.focusWidget()
-                break
+        current_widget = self.stackedWidget.widget(school_num)
+        current_widget.find_items_move_in(teacher)
 
     def show_msg_box(self, msg, is_error):
         msg_box = QMessageBox()

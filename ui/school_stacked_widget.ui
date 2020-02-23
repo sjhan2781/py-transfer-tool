@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>stacked_widget</class>
- <widget class="QWidget" name="stacked_widget">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>694</height>
+    <height>699</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -214,12 +214,12 @@ QTableWidget::item:selected {
      </column>
      <column>
       <property name="text">
-       <string>소속</string>
+       <string>성명</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>성명</string>
+       <string>소속</string>
       </property>
      </column>
     </widget>
@@ -359,7 +359,7 @@ QTableWidget::item:selected {
      </column>
      <column>
       <property name="text">
-       <string>신임지</string>
+       <string>임지지정</string>
       </property>
      </column>
     </widget>
@@ -430,12 +430,12 @@ QTableWidget::item:selected {
      </column>
      <column>
       <property name="text">
-       <string>소속</string>
+       <string>성명</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>성명</string>
+       <string>소속</string>
       </property>
      </column>
     </widget>

@@ -26,9 +26,6 @@ class TeacherInternal:
         self.remarks = kwargs['remarks']
         self.disposed = kwargs['disposed']
 
-        # self.regist_num_str = str(self.regist_num)
-        # self.birth_compare = (int(self.regist_num_str[0:6]) + 500000) % 1000000
-
         self.birth = RegistNumChecker.check_valid(self, kwargs['regist_num'])
 
     def __lt__(self, other):

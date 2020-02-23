@@ -4,15 +4,11 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, Qt
 from PyQt5.QtWidgets import QWidget, QAbstractItemView
 import custom_widget_item as custom
-from table_layout.base_table_widget import BaseTable
 
 
 class ExternalTable(QtWidgets.QTableWidget):
     def __init__(self, parent: typing.Optional[QWidget] = ...) -> None:
         super().__init__()
-
-        self.resizeColumnsToContents()
-        self.resizeRowsToContents()
         # self.parent = parent
 
     def set_row(self, teacher):
@@ -20,6 +16,7 @@ class ExternalTable(QtWidgets.QTableWidget):
 
         i = self.rowCount()
         self.insertRow(i)
+
         self.setItem(i, 0, custom.StringItem(teacher.type))
         self.setItem(i, 1, custom.StringItem(teacher.region))
         self.setItem(i, 2, custom.StringItem(teacher.school))
@@ -46,18 +43,29 @@ class ExternalTable(QtWidgets.QTableWidget):
 
         self.setSortingEnabled(True)
 
-        self.resizeColumnsToContents()
-        self.resizeRowsToContents()
-        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
-    def add_table_items(self, items):
+    def init_table_items(self, items):
         self.setRowCount(0)
 
-        for item in items:
-            self.set_row(item)
+        for teacher in items:
+            if teacher.disposed is None:
+                self.set_row(teacher)
+
+        # 내용에 맞춰 셀 크기 자동 조정
+        self.resizeColumnsToContents()
+        self.resizeRowsToContents()
+
+        # 수정 금지
+        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def add_item(self, teacher):
         self.set_row(teacher)
+
+        # 내용에 맞춰 셀 크기 자동 조정
+        self.resizeColumnsToContents()
+        self.resizeRowsToContents()
+
+        # 수정 금지
+        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def pop(self, index):
         teacher = self.item(index, 4).data(Qt.UserRole)

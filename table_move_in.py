@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QWidget, QAbstractItemView
 import custom_widget_item as custom
 
 from model.teacher_internal import TeacherInternal
-from table_layout.base_table_widget import BaseTable
 
 
 class MoveInTable(QtWidgets.QTableWidget):
@@ -17,7 +16,7 @@ class MoveInTable(QtWidgets.QTableWidget):
         self.resizeRowsToContents()
         self.parent = parent
 
-        # self.itemDoubleClicked.connect(self.parent.delete)
+        self.itemDoubleClicked.connect(self.parent.parent.delete)
 
     def set_row(self, teacher):
         self.setSortingEnabled(False)
@@ -40,6 +39,13 @@ class MoveInTable(QtWidgets.QTableWidget):
 
         self.setSortingEnabled(True)
 
+    @pyqtSlot()
+    def init_table_items(self, items):
+        self.setRowCount(0)
+
+        for item in items:
+            self.set_row(item)
+
         # 내용에 맞춰 셀 크기 자동 조정
         self.resizeColumnsToContents()
         self.resizeRowsToContents()
@@ -47,15 +53,15 @@ class MoveInTable(QtWidgets.QTableWidget):
         # 수정 금지
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-    @pyqtSlot()
-    def add_table_items(self, items):
-        self.setRowCount(0)
-
-        for item in items:
-            self.set_row(item)
-
     def add_item(self, teacher):
         self.set_row(teacher)
+
+        # 내용에 맞춰 셀 크기 자동 조정
+        self.resizeColumnsToContents()
+        self.resizeRowsToContents()
+
+        # 수정 금지
+        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
     def pop(self, index):
         teacher = self.item(index, 2).data(Qt.UserRole)

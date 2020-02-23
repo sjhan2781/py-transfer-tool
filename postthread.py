@@ -6,7 +6,6 @@ class PostingThread(QtCore.QThread):
 
     def __init__(self, **kwargs):
         super().__init__()
-        self.controller = kwargs['controller']
         self.internal = kwargs['internal']
         self.external = kwargs['external']
         self.schools = kwargs['schools']
@@ -21,12 +20,11 @@ class PostingThread(QtCore.QThread):
     def post(self):
         self.before_post()
         self.post_invited()
-        # self.post_priority()
         self.go_to_next.emit()
 
     def before_post(self):
         print('internal {} school {} external {}'
-            .format(self.internal.__len__(), self.schools.__len__(), self.external.__len__()))
+                    .format(self.internal.__len__(), self.schools.__len__(), self.external.__len__()))
 
         for teacher in self.invited:
             if teacher.disposed is not None:

@@ -155,7 +155,7 @@ QTableWidget::item:selected {
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QTableWidget" name="vacancy_table">
+    <widget class="VacancyTable" name="vacancy_table">
      <property name="styleSheet">
       <string notr="true">QHeaderView::section{
 	background-color	: rgb(235, 125, 60);
@@ -365,7 +365,7 @@ QTableWidget::item:selected {
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QTableWidget" name="recruit_table">
+    <widget class="RecruitTable" name="recruit_table">
      <property name="styleSheet">
       <string notr="true">QHeaderView::section{
 	background-color	: rgb(94, 156, 211);
@@ -452,6 +452,16 @@ QTableWidget::item:selected {
    <class>MoveOutTable</class>
    <extends>QTableWidget</extends>
    <header>table_move_out.h</header>
+  </customwidget>
+  <customwidget>
+   <class>VacancyTable</class>
+   <extends>QTableWidget</extends>
+   <header>table_vacancy.h</header>
+  </customwidget>
+  <customwidget>
+   <class>RecruitTable</class>
+   <extends>QTableWidget</extends>
+   <header>table_recruit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

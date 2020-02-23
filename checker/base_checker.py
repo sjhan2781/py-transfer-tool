@@ -6,5 +6,5 @@ class BaseChecker(metaclass=ABCMeta):
         pass
 
     @abstractmethod # Character 클래스를 상속받는 모든 클래스는 하기 함수를 오버라이딩으로 구현해야 인스턴스 생성이 가능하다.
-    def check_valid(self):
+    def check_valid(self, value):
         raise NotImplementedError
