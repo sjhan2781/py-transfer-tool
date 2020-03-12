@@ -24,6 +24,9 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
         self.recruit = kwargs['recruit']
         self.total_term = 0
 
+        for school in self.schools:
+            self.total_term += school.term
+
         # self = uic.loadUi("tableWidget", self)
         self.setupUi(self)
 

@@ -42,6 +42,18 @@ class StartView(gui.start_widget_view.Ui_Start, QtWidgets.QWidget):
             self.close()
         print('start')
 
+    @pyqtSlot()
+    def download_ex_internal(self):
+        self.controller.save_example('internal')
+
+    @pyqtSlot()
+    def download_ex_external(self):
+        self.controller.save_example('external')
+
+    @pyqtSlot()
+    def download_ex_school_status(self):
+        self.controller.save_example('school_status')
+
     @staticmethod
     def open_QFileDialog(content):
         file_url = QFileDialog.getOpenFileName(None, content, "", "Excel (*.xlsx *.xlsm)")
