@@ -1,4 +1,5 @@
 import os
+import sys
 
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QMessageBox, QApplication
@@ -131,12 +132,14 @@ class StartController(QObject):
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
+        err_code = 0
 
         if 'xlsm' in ext:
             has_macro = True
 
         try:
             wb = load_workbook(file_url, data_only=True, keep_vba=has_macro, read_only=True)
+            err_code += 1
             ws = wb['초등(학교별)']
 
             i = 0
@@ -161,6 +164,7 @@ class StartController(QObject):
                 i += 1
 
             i = 0
+            err_code += 1
             ws = wb['초빙']
             for row in ws.iter_rows(min_row=6):
                 if row[0].value is None:
@@ -180,6 +184,7 @@ class StartController(QObject):
                 self.invited_list.append(t)
                 i += 1
 
+            err_code += 1
             ws = wb['비정기']
             i = 0
             for row in ws.iter_rows(min_row=6):
@@ -211,7 +216,14 @@ class StartController(QObject):
 
         except KeyError as e:
             print(e)
-            self.show_msg_box("\'초등(학교별)\', \'초빙\', \'비정기\' 시트가 있는지 확인해주세요.", True)
+            if err_code == 1:
+                err_sheet_name = '초등(학교별)'
+            elif err_code == 2:
+                err_sheet_name = '초빙'
+            elif err_code == 3:
+                err_sheet_name = '비정기'
+
+            self.show_msg_box("\'" + err_sheet_name + "\' 시트가 필요합니다.", True)
             self.flag_internal = False
             wb.close()
 
@@ -228,16 +240,21 @@ class StartController(QObject):
 
     def get_school_list(self, file_url):
         self.school_list.clear()
+        self.vacancy.clear()
+        self.recruit.clear()
+
         self.school_file_url = file_url
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
+        err_code = 0
 
         if 'xlsm' in ext:
             has_macro = True
 
         try:
             wb = load_workbook(file_url, data_only=True, keep_vba=has_macro, read_only=True)
+            err_code += 1
             ws = wb['결충원']
 
             i = 0
@@ -262,6 +279,7 @@ class StartController(QObject):
                 print(self.school_list[i])
                 i += 1
 
+            err_code += 1
             ws = wb['결원내용']
             for row in ws.iter_rows(min_row=4):
                 if row[0].value is None:
@@ -274,6 +292,7 @@ class StartController(QObject):
 
                 self.vacancy[self.hash_schools.get(t.school) - 1].append(t)
 
+            err_code += 1
             ws = wb['충원내용']
             for row in ws.iter_rows(min_row=4):
                 if row[0].value is None:
@@ -294,7 +313,15 @@ class StartController(QObject):
 
         except KeyError as e:
             print(e)
-            self.show_msg_box("\'결충원\' 시트가 있는지 확인해주세요.", True)
+
+            if err_code == 1:
+                err_sheet_name = '결충원'
+            elif err_code == 2:
+                err_sheet_name = '결원내용'
+            elif err_code == 3:
+                err_sheet_name = '충원내용'
+
+            self.show_msg_box("\'" + err_sheet_name + "\' 시트가 필요합니다.", True)
             self.flag_internal = False
             wb.close()
 
@@ -316,7 +343,7 @@ class StartController(QObject):
     def get_external_list(self, file_url):
         self.external_list.clear()
         self.external_file_url = file_url
-
+        err_code = 0
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
@@ -326,6 +353,7 @@ class StartController(QObject):
 
         try:
             wb = load_workbook(filename=file_url, data_only=True, keep_vba=has_macro, read_only=True)
+            err_code += 1
             ws = wb['배정전정리']
 
             i = 0
@@ -350,6 +378,7 @@ class StartController(QObject):
                 self.external_list.append(t)
                 i += 1
 
+            err_code += 1
             ws = wb['시흥전출']
 
             i = 0
@@ -378,7 +407,13 @@ class StartController(QObject):
 
         except KeyError as e:
             print(e)
-            self.show_msg_box("\'배정전정리\' 시트가 있는지 확인해주세요.", True)
+
+            if err_code == 1:
+                err_sheet_name = '배정전정리'
+            elif err_code == 2:
+                err_sheet_name = '시흥전출'
+
+            self.show_msg_box("\'" + err_sheet_name + "\' 시트가 필요합니다.", True)
             self.flag_internal = False
             wb.close()
 
@@ -398,7 +433,7 @@ class StartController(QObject):
             return True
 
         else:
-            msg = '불러오지 않은 파일이 있습니다.\n'
+            msg = ''
 
             if not self.flag_schools:
                 msg += '결충원 현황'
@@ -412,6 +447,8 @@ class StartController(QObject):
                 if msg:
                     msg += ', '
                 msg += '타시군 전입명부'
+
+            msg = '불러오지 않은 파일이 있습니다.\n' + msg
 
             StartView.show_msg_box(msg=msg, is_error=True)
 
@@ -440,6 +477,14 @@ class StartController(QObject):
     def save(self, file_url):
         self.save_thread.result_file_url = file_url
         self.save_thread.start()
+
+    def save_example(self, file, save_name):
+        file_url = 'example_' + file + ".xlsx"
+        wb = load_workbook(resource_path(file_url))
+
+        wb.save(save_name + '.xlsx')
+
+        self.show_msg_box('저장 완료', False)
 
     def update(self):
         self.update_thread.invited = self.invited_list
@@ -472,3 +517,10 @@ class StartController(QObject):
 
         if result == QMessageBox.Ok:
             QApplication.quit()
+
+
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
