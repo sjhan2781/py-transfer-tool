@@ -44,15 +44,15 @@ class StartView(gui.start_widget_view.Ui_Start, QtWidgets.QWidget):
 
     @pyqtSlot()
     def download_ex_internal(self):
-        self.controller.save_example('internal')
+        self.controller.save_example('internal', '관내순위명부')
 
     @pyqtSlot()
     def download_ex_external(self):
-        self.controller.save_example('external')
+        self.controller.save_example('external', '타시군전입명부')
 
     @pyqtSlot()
     def download_ex_school_status(self):
-        self.controller.save_example('school_status')
+        self.controller.save_example('school_status', '결충원현황')
 
     @staticmethod
     def open_QFileDialog(content):

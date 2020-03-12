@@ -486,10 +486,11 @@ class StartController(QObject):
         self.save_thread.result_file_url = file_url
         self.save_thread.start()
 
-    def save_example(self, file):
+    def save_example(self, file, save_name):
         file_url = 'example_' + file + ".xlsx"
         wb = load_workbook(resource_path(file_url))
-        wb.save(file_url)
+
+        wb.save(save_name + '.xlsx')
 
         self.show_msg_box('저장 완료', False)
 
