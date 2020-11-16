@@ -108,8 +108,7 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
             else:
                 self.tableWidget_internal.add_item(teacher)
                 self.schools[selected_tab].inside -= 1
-
-                cur_widget.pop_move_out_item(teacher)
+                self.stackedWidget.widget(self.hash_schools[teacher.school] - 1).pop_move_out_item(teacher)
 
                 if '만기' not in teacher.type and '비정기' not in teacher.type:
                     self.schools[self.hash_schools.get(teacher.school) - 1].gone -= 1

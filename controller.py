@@ -1,6 +1,9 @@
 import os
 import sys
+<<<<<<< HEAD
 import urllib
+=======
+>>>>>>> develop
 
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QMessageBox, QApplication
@@ -133,12 +136,14 @@ class StartController(QObject):
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
+        err_code = 0
 
         if 'xlsm' in ext:
             has_macro = True
 
         try:
             wb = load_workbook(file_url, data_only=True, keep_vba=has_macro, read_only=True)
+            err_code += 1
             ws = wb['초등(학교별)']
 
             i = 0
@@ -165,6 +170,7 @@ class StartController(QObject):
                 i += 1
 
             i = 0
+            err_code += 1
             ws = wb['초빙']
             for row in ws.iter_rows(min_row=6):
                 if row[0].value is None:
@@ -186,6 +192,7 @@ class StartController(QObject):
                 self.invited_list.append(t)
                 i += 1
 
+            err_code += 1
             ws = wb['비정기']
             i = 0
             for row in ws.iter_rows(min_row=6):
@@ -211,14 +218,32 @@ class StartController(QObject):
 
         except TypeError as e:
             print(e)
-            print(t.id)
-            self.show_msg_box("{}시트 {}번 행 서식을 확인해주세요.".format(ws.title, i + 6), True)
+<<<<<<< HEAD
+            self.show_msg_box("\'{}\'시트 {}번째 행 서식을 확인해주세요.".format(ws.title, row[0].row), True)
+=======
+
+            self.show_msg_box("{}시트 {}번 행 서식을 확인해주세요.".format(ws.title, row[0].row), True)
+>>>>>>> develop
             self.flag_internal = False
             wb.close()
 
         except KeyError as e:
             print(e)
-            self.show_msg_box("\'초등(학교별)\', \'초빙\', \'비정기\' 시트가 있는지 확인해주세요.", True)
+<<<<<<< HEAD
+
+=======
+>>>>>>> develop
+            if err_code == 1:
+                err_sheet_name = '초등(학교별)'
+            elif err_code == 2:
+                err_sheet_name = '초빙'
+            elif err_code == 3:
+                err_sheet_name = '비정기'
+<<<<<<< HEAD
+
+=======
+>>>>>>> develop
+            self.show_msg_box("\'" + err_sheet_name + "\' 시트가 필요합니다.", True)
             self.flag_internal = False
             wb.close()
 
@@ -237,6 +262,10 @@ class StartController(QObject):
         self.school_list.clear()
         self.vacancy.clear()
         self.recruit.clear()
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
         self.school_file_url = file_url
         fname, ext = os.path.splitext(file_url)
 
@@ -249,6 +278,7 @@ class StartController(QObject):
         try:
             err_code += 1
             wb = load_workbook(file_url, data_only=True, keep_vba=has_macro, read_only=True)
+            err_code += 1
             ws = wb['결충원']
 
             i = 0
@@ -274,8 +304,14 @@ class StartController(QObject):
                 i += 1
 
             err_code += 1
+<<<<<<< HEAD
             ws = wb['결원내용']
             for row in ws.iter_rows(min_row=4):
+=======
+            i = 0
+            ws = wb['결원내용']
+            for row in ws.iter_rows(min_row=2):
+>>>>>>> develop
                 if row[3].value is None:
                     break
                 t = TeacherInternal(id=row[0].value, rank=None, school=row[2].value, region_grade=None,
@@ -285,10 +321,17 @@ class StartController(QObject):
                                     date=None, remarks=None, disposed=None)
 
                 self.vacancy[self.hash_schools.get(t.school) - 1].append(t)
+                i += 1
 
             err_code += 1
+<<<<<<< HEAD
             ws = wb['충원내용']
             for row in ws.iter_rows(min_row=4):
+=======
+            i = 0
+            ws = wb['충원내용']
+            for row in ws.iter_rows(min_row=2):
+>>>>>>> develop
                 if row[3].value is None:
                     break
                 t = TeacherInternal(id=row[0].value, rank=None, school=row[2].value, region_grade=None,
@@ -298,10 +341,16 @@ class StartController(QObject):
                                     date=None, remarks=None, disposed=None)
 
                 self.recruit[self.hash_schools.get(t.school) - 1].append(t)
+                i += 1
 
         except TypeError as e:
             print(e)
-            self.show_msg_box("{}번째 행 서식을 확인해주세요.".format(i + 8), True)
+<<<<<<< HEAD
+            self.show_msg_box("\'{}\'시트 {}번째 행 서식을 확인해주세요.".format(ws.title, row[0].row), True)
+=======
+
+            self.show_msg_box("\'{}\' 시트 {}번째 행 서식을 확인해주세요.".format(ws.title, row[0].row), True)
+>>>>>>> develop
             self.flag_internal = False
             wb.close()
 
@@ -337,9 +386,13 @@ class StartController(QObject):
     def get_external_list(self, file_url):
         self.external_list.clear()
         self.external_file_url = file_url
+<<<<<<< HEAD
 
         err_code = 0
 
+=======
+        err_code = 0
+>>>>>>> develop
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
@@ -349,11 +402,14 @@ class StartController(QObject):
 
         try:
             wb = load_workbook(filename=file_url, data_only=True, keep_vba=has_macro, read_only=True)
+            err_code += 1
             ws = wb['배정전정리']
-
             i = 0
+<<<<<<< HEAD
 
             err_code += 1
+=======
+>>>>>>> develop
             for row in ws.iter_rows(min_row=4):
                 if row[0].value is None:
                     break
@@ -375,6 +431,7 @@ class StartController(QObject):
                 i += 1
 
             err_code += 1
+<<<<<<< HEAD
             ws = wb['순위명부']
 
             for row in ws.iter_rows(min_row=3):
@@ -384,6 +441,9 @@ class StartController(QObject):
                 self.external_list[row[0].value-1].disposed = row[10].value
 
             err_code += 1
+=======
+            ws = wb['시흥전출']
+>>>>>>> develop
 
             ws = wb['시흥전출']
             i = 0
@@ -406,7 +466,12 @@ class StartController(QObject):
 
         except TypeError as e:
             print(e)
-            self.show_msg_box("{}번째 행 서식을 확인해주세요.".format(i + 2), True)
+<<<<<<< HEAD
+            self.show_msg_box("\'{}\'시트 {}번째 행 서식을 확인해주세요.".format(ws.title, row[0].row), True)
+=======
+
+            self.show_msg_box("{}시트 {}번째 행 서식을 확인해주세요.".format(ws.title, i + row[0].row), True)
+>>>>>>> develop
             self.flag_internal = False
             wb.close()
 
@@ -416,8 +481,11 @@ class StartController(QObject):
             if err_code == 1:
                 err_sheet_name = '배정전정리'
             elif err_code == 2:
+<<<<<<< HEAD
                 err_sheet_name = '순위명부'
             elif err_code == 3:
+=======
+>>>>>>> develop
                 err_sheet_name = '시흥전출'
 
             self.show_msg_box("\'" + err_sheet_name + "\' 시트가 필요합니다.", True)
@@ -440,7 +508,10 @@ class StartController(QObject):
             return True
 
         else:
+<<<<<<< HEAD
             # msg = '불러오지 않은 파일이 있습니다.\n'
+=======
+>>>>>>> develop
             msg = ''
 
             if not self.flag_schools:
@@ -531,3 +602,7 @@ def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
