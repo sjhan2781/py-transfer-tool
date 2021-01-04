@@ -24,6 +24,9 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
         self.recruit = kwargs['recruit']
         self.total_term = 0
 
+        for school in self.schools:
+            self.total_term += school.term
+
         # self = uic.loadUi("tableWidget", self)
         self.setupUi(self)
 
@@ -105,8 +108,7 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
             else:
                 self.tableWidget_internal.add_item(teacher)
                 self.schools[selected_tab].inside -= 1
-
-                cur_widget.pop_move_out_item(teacher)
+                self.stackedWidget.widget(self.hash_schools[teacher.school] - 1).pop_move_out_item(teacher)
 
                 if '만기' not in teacher.type and '비정기' not in teacher.type:
                     self.schools[self.hash_schools.get(teacher.school) - 1].gone -= 1
@@ -184,6 +186,19 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
                 self.gone[self.hash_schools.get(t.school) - 1].append(t)
             else:
                 self.unDeployed[self.hash_schools.get(t.school) - 1].append(t)
+
+        for t in self.teachers_external:
+            if t.disposed is not None:
+                self.designation[self.hash_schools.get(t.disposed.name) - 1].append(t)
+
+        for s in self.schools:
+            for i in range(0, s.term):
+                teacher = TeacherExternal(id=-1, rank='', type='미충원', region='', position='', school='',
+                                          name='미충원', birth='', sex='', major='', career='',
+                                          first='', second='', third='', ab_type='', ab_start='',
+                                          ab_end='', related_school='', relation='', relation_person='',
+                                          address='', phone='', email='', vehicle='', remarks='')
+                self.designation[s.num - 1].append(teacher)
 
         for i in range(0, self.schools.__len__()):
             self.schoolListWidget.addItem(QListWidgetItem('%s (%d)' % (self.schools[i].name,

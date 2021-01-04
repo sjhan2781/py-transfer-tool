@@ -47,6 +47,10 @@ class PostingThread(QtCore.QThread):
                 if '만기' in teacher.type or '비정기' in teacher.type:
                     self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
 
+        for teacher in self.external:
+            if teacher.disposed is not None:
+                teacher.disposed = self.schools[self.hash_schools.get(teacher.disposed)-1]
+
     def post_invited(self):
         self.post_by_first(self.invited)
         self.post_priority()

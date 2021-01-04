@@ -151,6 +151,7 @@ class UpdatingThread(QtCore.QThread):
 
             wb.save(dir + self.directory + fname + '_결과' + self.time + ext)
             print("internal saved")
+            wb.close()
 
         except Exception as e:
             print(e)
@@ -158,8 +159,6 @@ class UpdatingThread(QtCore.QThread):
             if self.msg:
                 self.msg += ', '
             self.msg += '관내명부'
-            wb.close()
-        else:
             wb.close()
 
     def save_external(self):
@@ -197,6 +196,7 @@ class UpdatingThread(QtCore.QThread):
                 os.makedirs(dir+self.directory)
             wb.save(dir + self.directory + fname + '_결과' + self.time + '.xlsx')
             print("external saved")
+            wb.close()
 
         except Exception as e:
             print(e)
@@ -204,8 +204,6 @@ class UpdatingThread(QtCore.QThread):
             if self.msg:
                 self.msg += ', '
             self.msg += '관외명부'
-            wb.close()
-        else:
             wb.close()
 
     def save_schools(self):
@@ -218,7 +216,7 @@ class UpdatingThread(QtCore.QThread):
             # if 'xlsm' in ext:
             #     has_macro = True
 
-            wb = load_workbook(self.school_file_url, keep_vba=False)
+            wb = load_workbook(self.school_file_url, read_only=False, data_only=True)
             ws = wb['결충원']
 
             fontStyle = Font(size="8")
@@ -242,6 +240,7 @@ class UpdatingThread(QtCore.QThread):
 
             wb.save(dir + self.directory + fname + '_결과' + self.time + ext)
             print("schools saved")
+            wb.close()
 
         except Exception as e:
             print(e)
@@ -251,5 +250,4 @@ class UpdatingThread(QtCore.QThread):
                 self.msg += ', '
             self.msg += '결충원'
             wb.close()
-        else:
-            wb.close()
+
