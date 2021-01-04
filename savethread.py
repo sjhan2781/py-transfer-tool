@@ -21,8 +21,8 @@ class SavingThread(QtCore.QThread):
         self.external = kwargs['external']
         self.schools = kwargs['schools']
         self.hash_schools = kwargs['hash_schools']
-        self.invited = kwargs['invited']
-        self.priority = kwargs['priority']
+        self.invited = list()
+        self.gone_internal = list()
         self.designation = kwargs['designation']
         self.gone = kwargs['gone']
         self.gone_external = kwargs['gone_external']
@@ -41,11 +41,20 @@ class SavingThread(QtCore.QThread):
         self.is_error = False
         self.msg = ''
 
+        self.distinct_internal()
         self.make_result_file()
 
         if not self.is_error:
             self.msg = "저장되었습니다."
         self.show_msg_box.emit(self.msg, self.is_error)
+
+    def distinct_internal(self):
+        for t in self.internal:
+            if t.disposed is not None:
+                if '초빙' in t.type:
+                    self.invited.append(t)
+                else:
+                    self.gone_internal.append(t)
 
     def make_result_file(self):
         try:
@@ -53,7 +62,7 @@ class SavingThread(QtCore.QThread):
             self.counter = 0
             sheet1 = wb.active
             sheet1.title = '관내발령결과'
-            self.make_result_sheet(sheet1, self.priority + self.internal, '경기도시흥교육지원청 초등교사 정기인사(관내)-현임교순', 'school')
+            self.make_result_sheet(sheet1, self.gone_internal, '경기도시흥교육지원청 초등교사 정기인사(관내)-현임교순', 'school')
 
             sheet2 = wb.create_sheet('타시군(도)발령결과')
             self.make_result_sheet(sheet2, self.external, '경기도시흥교육지원청 초등교사 정기인사(관외)-성명순', 'name')
@@ -202,7 +211,7 @@ class SavingThread(QtCore.QThread):
         i = 1
         row = 2
 
-        for teacher in self.internal:
+        for teacher in self.gone_internal:
             self.counter += 1
             self.set_state_result.emit(self.counter)
             if teacher.disposed is None:
@@ -219,22 +228,6 @@ class SavingThread(QtCore.QThread):
             i += 1
             row += 1
 
-        for teacher in self.priority:
-            self.counter += 1
-            self.set_state_result.emit(self.counter)
-            if teacher.disposed is None:
-                continue
-            self.write_to_cell(sheet.cell(row=row, column=1), i, fontStyle, alignment)
-            self.write_to_cell(sheet.cell(row=row, column=2), '관내', fontStyle, alignment)
-            self.write_to_cell(sheet.cell(row=row, column=3), '시흥', fontStyle, alignment)
-            self.write_to_cell(sheet.cell(row=row, column=4), teacher.school, fontStyle, alignment)
-            self.write_to_cell(sheet.cell(row=row, column=5), teacher.name, fontStyle, alignment)
-            self.write_to_cell(sheet.cell(row=row, column=6), teacher.disposed.name, fontStyle, alignment)
-            self.write_to_cell(sheet.cell(row=row, column=7), teacher.sex, fontStyle, alignment)
-            self.write_to_cell(sheet.cell(row=row, column=8), teacher.birth, fontStyle, alignment)
-
-            i += 1
-            row += 1
 
         for teacher in self.invited:
             self.counter += 1

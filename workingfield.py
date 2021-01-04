@@ -15,7 +15,7 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
         self.controller = kwargs['controller']
         self.schools = kwargs['schools']
         self.hash_schools = kwargs['hash_school']
-        self.teachers_internal = kwargs['invited'] + kwargs['priority'] + kwargs['internal']
+        self.teachers_internal = kwargs['internal']
         self.teachers_external = kwargs['external']
         self.designation = kwargs['designation']
         self.gone = kwargs['gone']
@@ -179,7 +179,6 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
             print(e)
 
     def set_up_ui(self):
-
         for t in self.teachers_internal:
             if t.disposed is not None:
                 self.designation[self.hash_schools.get(t.disposed.name) - 1].append(t)

@@ -12,7 +12,6 @@ from model.schoolstatus import SchoolStatus
 from postthread import PostingThread
 from savethread import SavingThread
 from savingwidget import SavingWidget
-from start_view import StartView
 from workingfield import WorkingField
 from model.teacher_external import TeacherExternal
 from model.teacher_internal import TeacherInternal
@@ -25,19 +24,29 @@ class StartController(QObject):
     def __init__(self) -> None:
         super().__init__()
 
+        # 관내전출희망교사
         self.internal_list = list()
+        # 학교 리스트
         self.school_list = list()
+        # 관외전입자
         self.external_list = list()
-        self.invited_list = list()
-        self.priority_list = list()
+        # 학교 해쉬
         self.hash_schools = dict()
 
+        # ----------- 학교별 구분 --------- #
+        # 해당교 전입교사
         self.designation = list()
+        # 해당교 관내전출교사
         self.gone = list()
+        # 해당교에서 관외로 전출간 교사
         self.gone_external = list()
+        # 해당교에서 발령가지 못한 교사
         self.unDeployed = list()
+        # 해당교 결원교사
         self.vacancy = list()
+        # 해당교 충원교사
         self.recruit = list()
+        # ----------- 학교별 구분 --------- #
 
         self.internal_file_url = None
         self.external_file_url = None
@@ -47,16 +56,12 @@ class StartController(QObject):
                                          external=self.external_list,
                                          schools=self.school_list,
                                          hash_schools=self.hash_schools,
-                                         invited=self.invited_list,
-                                         priority=self.priority_list,
                                          gone_external=self.gone_external)
 
         self.save_thread = SavingThread(internal=self.internal_list,
                                         external=self.external_list,
                                         schools=self.school_list,
                                         hash_schools=self.hash_schools,
-                                        invited=self.invited_list,
-                                        priority=self.priority_list,
                                         designation=self.designation,
                                         gone=self.gone,
                                         gone_external=self.gone_external,
@@ -67,8 +72,6 @@ class StartController(QObject):
                                             external=self.external_list,
                                             schools=self.school_list,
                                             hash_schools=self.hash_schools,
-                                            invited=self.invited_list,
-                                            priority=self.priority_list,
                                             internal_file_url=self.internal_file_url,
                                             external_file_url=self.external_file_url,
                                             school_file_url=self.school_file_url,
@@ -78,15 +81,13 @@ class StartController(QObject):
                                              'title': '기다려주세요..',
                                              'internal': self.internal_list,
                                              'school': self.school_list,
-                                             'external': self.external_list,
-                                             'invited': self.invited_list})
+                                             'external': self.external_list,})
 
         self.waiting_save = SavingWidget(**{'controller': self,
                                             'title': '저장중입니다..',
                                             'internal': self.internal_list,
                                             'school': self.school_list,
                                             'external': self.external_list,
-                                            'invited': self.invited_list,
                                             'designation': self.designation,
                                             'gone': self.gone,
                                             'gone_external': self.gone_external,
@@ -96,9 +97,7 @@ class StartController(QObject):
                                                 'title': '저장중입니다..',
                                                 'internal': self.internal_list,
                                                 'schools': self.school_list,
-                                                'external': self.external_list,
-                                                'invited': self.invited_list,
-                                                'priority': self.priority_list})
+                                                'external': self.external_list})
 
         self.init_thread()
 
@@ -127,8 +126,6 @@ class StartController(QObject):
 
     def get_internal_list(self, file_url):
         self.internal_list.clear()
-        self.invited_list.clear()
-        self.priority_list.clear()
         self.internal_file_url = file_url
 
         fname, ext = os.path.splitext(file_url)
@@ -142,73 +139,19 @@ class StartController(QObject):
         try:
             wb = load_workbook(file_url, data_only=True, keep_vba=has_macro, read_only=True)
             err_code += 1
-            ws = wb['초등(학교별)']
-
+            ws = wb['Sheet1']
             i = 0
-            for row in ws.iter_rows(min_row=6):
-                if row[0].value is None:
-                    break
-                # t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
-                #                     position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
-                #                     type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
-                #                     first=row[24].value, second=row[25].value, third=row[26].value,
-                #                     date=row[8].value, remarks=row[27].value, disposed=None)
-
-                # 임지지정 후 불러오기...
-                t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
-                                    position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
-                                    type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
-                                    first=row[24].value, second=row[25].value, third=row[26].value,
-                                    date=row[8].value, remarks=row[27].value, disposed=row[31].value)
-
-                if '우대' in t.type:
-                    self.priority_list.append(t)
-                else:
-                    self.internal_list.append(t)
-                i += 1
-
-            i = 0
-            err_code += 1
-            ws = wb['초빙']
-            for row in ws.iter_rows(min_row=6):
-                if row[0].value is None:
+            for row in ws.iter_rows(min_row=10):
+                if row[1].value is None:
                     break
 
-                # t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
-                #                     position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
-                #                     type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
-                #                     first=row[24].value, second=row[25].value, third=row[26].value,
-                #                     date=row[8].value, remarks=row[27].value, disposed=None)
+                t = TeacherInternal(id=i, school=row[3].value, region_grade=row[8].value,
+                                    name=row[4].value, sex=row[6].value, regist_num=row[5].value,
+                                    type=row[18].value, transfer_year=row[16].value, transfer_score=row[17].value,
+                                    current_school_year=row[10].value, first=row[19].value, second=row[20].value,
+                                    third=row[21].value, date=row[9].value, remarks=row[23].value,
+                                    disposed=row[24].value)
 
-                # 임지지정 후 불러오기...
-                t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
-                                    position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
-                                    type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
-                                    first=row[24].value, second=row[25].value, third=row[26].value,
-                                    date=row[8].value, remarks=row[27].value, disposed=row[31].value)
-
-                self.invited_list.append(t)
-                i += 1
-
-            err_code += 1
-            ws = wb['비정기']
-            i = 0
-            for row in ws.iter_rows(min_row=6):
-                if row[0].value is None:
-                    break
-
-                # t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
-                #                     position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
-                #                     type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
-                #                     first=row[24].value, second=row[25].value, third=row[26].value,
-                #                     date=row[8].value, remarks=row[27].value, disposed=None)
-
-                # 임지지정 후 불러오기...
-                t = TeacherInternal(id=i, rank=row[0].value, school=row[1].value, region_grade=row[2].value,
-                                    position=row[3].value, name=row[4].value, sex=row[5].value, regist_num=row[6].value,
-                                    type=row[9].value, transfer_year=row[23].value, transfer_score=row[30].value,
-                                    first=row[24].value, second=row[25].value, third=row[26].value,
-                                    date=row[8].value, remarks=row[27].value, disposed=row[31].value)
                 self.internal_list.append(t)
                 i += 1
 
@@ -243,6 +186,9 @@ class StartController(QObject):
 
         else:
             self.flag_internal = True
+
+            for t in self.internal_list:
+                print(t)
             self.show_msg_box("성공적으로 불러왔습니다.", False)
             wb.close()
 
@@ -261,7 +207,6 @@ class StartController(QObject):
             has_macro = True
 
         try:
-            err_code += 1
             wb = load_workbook(file_url, data_only=True, keep_vba=has_macro, read_only=True)
             err_code += 1
             ws = wb['결충원']
@@ -292,14 +237,13 @@ class StartController(QObject):
 
             i = 0
             ws = wb['결원내용']
-            for row in ws.iter_rows(min_row=2):
-
+            for row in ws.iter_rows(min_row=4):
                 if row[3].value is None:
                     break
-                t = TeacherInternal(id=row[0].value, rank=None, school=row[2].value, region_grade=None,
+                t = TeacherInternal(id=row[0].value, school=row[2].value, region_grade=None,
                                     position=None, name=row[3].value, sex=None, regist_num=None,
                                     type=row[4].value, transfer_year=None, transfer_score=None,
-                                    first=None, second=None, third=None,
+                                    first=None, second=None, third=None, current_school_year=None,
                                     date=None, remarks=None, disposed=None)
 
                 self.vacancy[self.hash_schools.get(t.school) - 1].append(t)
@@ -309,14 +253,13 @@ class StartController(QObject):
 
             i = 0
             ws = wb['충원내용']
-            for row in ws.iter_rows(min_row=2):
-
+            for row in ws.iter_rows(min_row=4):
                 if row[3].value is None:
                     break
-                t = TeacherInternal(id=row[0].value, rank=None, school=row[2].value, region_grade=None,
+                t = TeacherInternal(id=row[0].value, school=row[2].value, region_grade=None,
                                     position=None, name=row[3].value, sex=None, regist_num=None,
                                     type=row[4].value, transfer_year=None, transfer_score=None,
-                                    first=None, second=None, third=None,
+                                    first=None, second=None, third=None, current_school_year=None,
                                     date=None, remarks=None, disposed=None)
 
                 self.recruit[self.hash_schools.get(t.school) - 1].append(t)
@@ -348,15 +291,15 @@ class StartController(QObject):
             print(e)
 
             # if isinstance(e, InvalidFileException):
-            StartView.show_msg_box("올바른 파일을 선택해주세요.", True)
+            self.show_msg_box("올바른 파일을 선택해주세요.", True)
             self.flag_schools = False
-            # wb.close()
+            wb.close()
 
         else:
             # self.designation = [[] for row in range(self.school_list.__len__())]
             # self.gone = [[] for row in range(self.school_list.__len__())]
             self.flag_schools = True
-            StartView.show_msg_box("성공적으로 불러왔습니다.", False)
+            self.show_msg_box("성공적으로 불러왔습니다.", False)
             wb.close()
 
     def get_external_list(self, file_url):
@@ -455,13 +398,13 @@ class StartController(QObject):
 
         except Exception as e:
             print(e)
-            StartView.show_msg_box("올바른 파일을 선택해주세요.", True)
+            self.show_msg_box("올바른 파일을 선택해주세요.", True)
             self.flag_external = False
             wb.close()
 
         else:
             self.flag_external = True
-            StartView.show_msg_box("성공적으로 불러왔습니다.", False)
+            self.show_msg_box("성공적으로 불러왔습니다.", False)
             wb.close()
 
     def is_valid(self):
@@ -486,7 +429,7 @@ class StartController(QObject):
 
             msg = '불러오지 않은 파일이 있습니다.\n' + msg
 
-            StartView.show_msg_box(msg=msg, is_error=True)
+            self.show_msg_box(msg=msg, is_error=True)
 
             return False
 
@@ -500,12 +443,10 @@ class StartController(QObject):
         self.field = WorkingField(internal=self.internal_list,
                                   external=self.external_list,
                                   schools=self.school_list,
-                                  invited=self.invited_list,
                                   hash_school=self.hash_schools,
                                   designation=self.designation,
                                   gone=self.gone,
                                   unDeployed=self.unDeployed,
-                                  priority=self.priority_list,
                                   recruit=self.recruit,
                                   vacancy=self.vacancy,
                                   controller=self, )
@@ -523,8 +464,6 @@ class StartController(QObject):
         self.show_msg_box('저장 완료', False)
 
     def update(self):
-        self.update_thread.invited = self.invited_list
-        self.update_thread.priority = self.priority_list
         self.update_thread.internal_file_url = self.internal_file_url
         self.update_thread.external_file_url = self.external_file_url
         self.update_thread.school_file_url = self.school_file_url

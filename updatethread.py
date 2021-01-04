@@ -25,8 +25,6 @@ class UpdatingThread(QtCore.QThread):
         self.internal = kwargs['internal']
         self.external = kwargs['external']
         self.schools = kwargs['schools']
-        self.invited = kwargs['invited']
-        self.priority = kwargs['priority']
         self.internal_file_url = kwargs['internal_file_url']
         self.school_file_url = kwargs['school_file_url']
         self.external_file_url = kwargs['external_file_url']
@@ -75,69 +73,30 @@ class UpdatingThread(QtCore.QThread):
             #     has_macro = True
 
             wb = load_workbook(filename=self.internal_file_url, keep_vba=False)
-            ws = [wb['초등(학교별)'], wb['비정기']]
-            ws_invited = wb['초빙']
+            ws = wb['Sheet1']
 
             fontStyle = Font(size="10")
             alignment = Alignment(horizontal='center', vertical='center')
             patternFill = PatternFill(patternType='solid', fgColor=Color('FD7D82'))
             # patternFill = PatternFill(patternType='solid', fgColor=Color('C2E7FF'))
 
-            for i in range(0, ws.__len__()):
-                # ws[i].merge_cells('AF4:AF5')
-                ws[i]['AF4'].value = '임지지정'
-                ws[i]['AF4'].font = fontStyle
-                ws[i]['AF4'].fill = patternFill
-                ws[i]['AF5'].fill = patternFill
-                ws[i]['AF4'].alignment = alignment
-
-            # ws_invited.merge_cells('AF4:AF5')
-            ws_invited['AF4'].value = '임지지정'
-            ws_invited['AF4'].font = fontStyle
-            ws_invited['AF4'].fill = patternFill
-            ws_invited['AF5'].fill = patternFill
-            ws_invited['AF4'].alignment = alignment
+            # for i in range(0, ws.__len__()):
+            ws.merge_cells('Y6:Y9')
+            ws['Y6'].value = '임지지정'
+            ws['Y6'].font = fontStyle
+            ws['Y6'].fill = patternFill
+            ws['Y6'].fill = patternFill
+            ws['Y6'].alignment = alignment
 
             count = 0
             for i in range(0, self.internal.__len__()):
-                if '비정기' in self.internal[i].type:
-                    index = 1
-                else:
-                    index = 0
 
                 if self.internal[i].disposed is None:
                     value = ''
                 else:
                     value = self.internal[i].disposed.name
-                cell = ws[index].cell(row=self.internal[i].id + 6, column=32, value=value)
-                cell.font = fontStyle
-                cell.alignment = alignment
-                cell.fill = patternFill
 
-                count += 1
-                self.msleep(SLEEP)
-                self.set_state_internal.emit(count)
-
-            for i in range(0, self.invited.__len__()):
-                if self.invited[i].disposed is None:
-                    value = ''
-                else:
-                    value = self.invited[i].disposed.name
-                cell = ws_invited.cell(row=self.invited[i].id + 6, column=32, value=value)
-                cell.font = fontStyle
-                cell.alignment = alignment
-                cell.fill = patternFill
-
-                count += 1
-                self.msleep(SLEEP)
-                self.set_state_internal.emit(count)
-
-            for i in range(0, self.priority.__len__()):
-                if self.priority[i].disposed is None:
-                    value = ''
-                else:
-                    value = self.priority[i].disposed.name
-                cell = ws[0].cell(row=self.priority[i].id + 6, column=32, value=value)
+                cell = ws.cell(row=self.internal[i].id + 10, column=25, value=value)
                 cell.font = fontStyle
                 cell.alignment = alignment
                 cell.fill = patternFill
@@ -147,7 +106,7 @@ class UpdatingThread(QtCore.QThread):
                 self.set_state_internal.emit(count)
 
             if not os.path.exists((dir + self.directory)):
-                os.makedirs(dir+self.directory)
+                os.makedirs(dir + self.directory)
 
             wb.save(dir + self.directory + fname + '_결과' + self.time + ext)
             print("internal saved")
@@ -193,7 +152,7 @@ class UpdatingThread(QtCore.QThread):
                 self.set_state_external.emit(count)
 
             if not os.path.exists((dir + self.directory)):
-                os.makedirs(dir+self.directory)
+                os.makedirs(dir + self.directory)
             wb.save(dir + self.directory + fname + '_결과' + self.time + '.xlsx')
             print("external saved")
             wb.close()
@@ -236,7 +195,7 @@ class UpdatingThread(QtCore.QThread):
                 self.set_state_school.emit(count)
 
             if not os.path.exists((dir + self.directory)):
-                os.makedirs(dir+self.directory)
+                os.makedirs(dir + self.directory)
 
             wb.save(dir + self.directory + fname + '_결과' + self.time + ext)
             print("schools saved")
@@ -250,4 +209,3 @@ class UpdatingThread(QtCore.QThread):
                 self.msg += ', '
             self.msg += '결충원'
             wb.close()
-
