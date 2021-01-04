@@ -55,8 +55,7 @@ class StartController(QObject):
         self.post_thread = PostingThread(internal=self.internal_list,
                                          external=self.external_list,
                                          schools=self.school_list,
-                                         hash_schools=self.hash_schools,
-                                         gone_external=self.gone_external)
+                                         hash_schools=self.hash_schools)
 
         self.save_thread = SavingThread(internal=self.internal_list,
                                         external=self.external_list,
@@ -186,9 +185,6 @@ class StartController(QObject):
 
         else:
             self.flag_internal = True
-
-            for t in self.internal_list:
-                print(t)
             self.show_msg_box("성공적으로 불러왔습니다.", False)
             wb.close()
 

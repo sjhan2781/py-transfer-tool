@@ -9,6 +9,7 @@ class PostingThread(QtCore.QThread):
         self.internal = kwargs['internal']
         self.external = kwargs['external']
         self.schools = kwargs['schools']
+        self.hash_schools = kwargs['hash_schools']
 
     def run(self) -> None:
         self.post()
@@ -89,6 +90,4 @@ class PostingThread(QtCore.QThread):
 
                     self.post_by_first()
                     return
-
-        # self.post_by_second(teachers)
 
