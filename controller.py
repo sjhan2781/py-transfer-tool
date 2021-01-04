@@ -6,6 +6,7 @@ import urllib
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QMessageBox, QApplication
 from openpyxl import load_workbook
+from openpyxl.utils.exceptions import InvalidFileException
 
 from loadingwidget import LoadingWidget
 from model.schoolstatus import SchoolStatus
@@ -124,9 +125,6 @@ class StartController(QObject):
         self.save_thread.finished.connect(self.waiting_save.close)
 
     def get_internal_list(self, file_url):
-        self.internal_list.clear()
-        self.internal_file_url = file_url
-
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
@@ -137,6 +135,10 @@ class StartController(QObject):
 
         try:
             wb = load_workbook(file_url, data_only=True, keep_vba=has_macro, read_only=True)
+
+            self.internal_list.clear()
+            self.internal_file_url = file_url
+
             err_code += 1
             ws = wb['Sheet1']
             i = 0
@@ -167,11 +169,7 @@ class StartController(QObject):
             print(e)
 
             if err_code == 1:
-                err_sheet_name = '초등(학교별)'
-            elif err_code == 2:
-                err_sheet_name = '초빙'
-            elif err_code == 3:
-                err_sheet_name = '비정기'
+                err_sheet_name = 'Sheet1'
 
             self.show_msg_box("\'" + err_sheet_name + "\' 시트가 필요합니다.", True)
             self.flag_internal = False
@@ -179,9 +177,14 @@ class StartController(QObject):
 
         except Exception as e:
             print(e)
-            self.show_msg_box("올바른 파일을 선택해주세요.", True)
-            self.flag_internal = False
-            # wb.close()
+
+            if isinstance(e, InvalidFileException):
+                self.show_msg_box("파일을 선택해주세요.", True)
+            else:
+                self.show_msg_box("올바른 파일을 선택해주세요.", True)
+
+            if self.internal_list.__len__() == 0:
+                self.flag_internal = False
 
         else:
             self.flag_internal = True
@@ -189,11 +192,6 @@ class StartController(QObject):
             wb.close()
 
     def get_school_list(self, file_url):
-        self.school_list.clear()
-        self.vacancy.clear()
-        self.recruit.clear()
-
-        self.school_file_url = file_url
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
@@ -204,6 +202,12 @@ class StartController(QObject):
 
         try:
             wb = load_workbook(file_url, data_only=True, keep_vba=has_macro, read_only=True)
+
+            self.school_list.clear()
+            self.vacancy.clear()
+            self.recruit.clear()
+            self.school_file_url = file_url
+
             err_code += 1
             ws = wb['결충원']
 
@@ -212,11 +216,6 @@ class StartController(QObject):
                 if row[0].value is None:
                     break
 
-                # print('{}'.format(row[51].internal_value))
-                # self.school_list.append(SchoolStatus(num=row[0].value, name=row[2].value, status=row[51].value,
-                #                                      outside=0, inside=0, gone=0, term=0, area=row[1].value))
-
-                # 불러오기 할 때
                 self.school_list.append(SchoolStatus(num=row[0].value, name=row[2].value, status=row[51].value,
                                                      outside=row[55].value, inside=row[53].value, gone=row[52].value,
                                                      term=row[63].value, area=row[1].value))
@@ -266,7 +265,7 @@ class StartController(QObject):
 
             self.show_msg_box("\'{}\' 시트 {}번째 행 서식을 확인해주세요.".format(ws.title, row[0].row), True)
 
-            self.flag_internal = False
+            self.flag_schools = False
             wb.close()
 
         except KeyError as e:
@@ -280,16 +279,19 @@ class StartController(QObject):
                 err_sheet_name = '충원내용'
 
             self.show_msg_box("\'" + err_sheet_name + "\' 시트가 필요합니다.", True)
-            self.flag_internal = False
+            self.flag_schools = False
             wb.close()
 
         except Exception as e:
             print(e)
 
-            # if isinstance(e, InvalidFileException):
-            self.show_msg_box("올바른 파일을 선택해주세요.", True)
-            self.flag_schools = False
-            wb.close()
+            if isinstance(e, InvalidFileException):
+                self.show_msg_box("파일을 선택해주세요.", True)
+            else:
+                self.show_msg_box("올바른 파일을 선택해주세요.", True)
+
+            if self.school_list.__len__() == 0:
+                self.flag_schools = False
 
         else:
             # self.designation = [[] for row in range(self.school_list.__len__())]
@@ -299,20 +301,19 @@ class StartController(QObject):
             wb.close()
 
     def get_external_list(self, file_url):
-        self.external_list.clear()
-        self.external_file_url = file_url
-
-        err_code = 0
-
         fname, ext = os.path.splitext(file_url)
 
         has_macro = False
+        err_code = 0
 
         if 'xlsm' in ext:
             has_macro = True
 
         try:
             wb = load_workbook(filename=file_url, data_only=True, keep_vba=has_macro, read_only=True)
+            self.external_list.clear()
+            self.external_file_url = file_url
+
             err_code += 1
             ws = wb['배정전정리']
             i = 0
@@ -375,7 +376,7 @@ class StartController(QObject):
 
             self.show_msg_box("{}시트 {}번째 행 서식을 확인해주세요.".format(ws.title, i + row[0].row), True)
 
-            self.flag_internal = False
+            self.flag_external = False
             wb.close()
 
         except KeyError as e:
@@ -389,14 +390,19 @@ class StartController(QObject):
                 err_sheet_name = '시흥전출'
 
             self.show_msg_box("\'" + err_sheet_name + "\' 시트가 필요합니다.", True)
-            self.flag_internal = False
+            self.flag_external = False
             wb.close()
 
         except Exception as e:
             print(e)
-            self.show_msg_box("올바른 파일을 선택해주세요.", True)
-            self.flag_external = False
-            wb.close()
+
+            if isinstance(e, InvalidFileException):
+                self.show_msg_box("파일을 선택해주세요.", True)
+            else:
+                self.show_msg_box("올바른 파일을 선택해주세요.", True)
+
+            if self.external_list.__len__() == 0:
+                self.flag_external = False
 
         else:
             self.flag_external = True
