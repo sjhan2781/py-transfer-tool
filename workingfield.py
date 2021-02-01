@@ -85,7 +85,6 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
                 teacher.disposed = self.schools[selected_tab]
                 tableWidget.removeRow(selected_row)
                 cur_widget.add_move_in_item(teacher)
-                self.total_state += 1
                 tableWidget.clearSelection()
 
         self.tabChanged(selected_tab)
@@ -116,7 +115,6 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
                 self.tabChanged(self.hash_schools.get(teacher.school) - 1)
 
             teacher.disposed = None
-            self.total_state -= 1
             cur_widget.clearSelection()
             self.tabChanged(selected_tab)
 

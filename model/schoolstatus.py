@@ -7,7 +7,6 @@ class SchoolStatus:
         self.num = num
         self.name = name
         # self.status = status.value
-
         self.status = NoneChecker.check_valid(self, status)
         self.inside = NoneChecker.check_valid(self, inside)
         self.outside = NoneChecker.check_valid(self, outside)
@@ -21,3 +20,4 @@ class SchoolStatus:
 
     def get_state(self):
         return self.status + self.inside + self.outside - self.gone + self.term
+
