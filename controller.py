@@ -18,8 +18,6 @@ from model.teacher_external import TeacherExternal
 from model.teacher_internal import TeacherInternal
 from updatethread import UpdatingThread
 from updatingwidget import UpdatingWidget
-import pandas as pd
-
 
 class StartController(QObject):
 
