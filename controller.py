@@ -18,6 +18,7 @@ from model.teacher_external import TeacherExternal
 from model.teacher_internal import TeacherInternal
 from updatethread import UpdatingThread
 from updatingwidget import UpdatingWidget
+import pandas as pd
 
 
 class StartController(QObject):
@@ -299,6 +300,7 @@ class StartController(QObject):
             self.flag_schools = True
             self.show_msg_box("성공적으로 불러왔습니다.", False)
             wb.close()
+
 
     def get_external_list(self, file_url):
         fname, ext = os.path.splitext(file_url)

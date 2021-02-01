@@ -13,7 +13,6 @@ class App(QApplication):
         super(App, self).__init__(sys_argv)
 
         self.setWindowIcon(QIcon(self.resource_path('./image/logo.ico')))
-
         self.main_controller = StartController()
         self.main_view = StartView(self.main_controller)
 

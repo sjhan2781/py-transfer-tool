@@ -67,12 +67,12 @@ class UpdatingThread(QtCore.QThread):
             dir = os.path.dirname(self.internal_file_url)
             fname, ext = os.path.splitext(os.path.basename(self.internal_file_url))
 
-            # has_macro = False
-            #
-            # if 'xlsm' in ext:
-            #     has_macro = True
+            has_macro = False
 
-            wb = load_workbook(filename=self.internal_file_url, keep_vba=False)
+            if 'xlsm' in ext:
+                has_macro = True
+
+            wb = load_workbook(filename=self.internal_file_url, read_only=False, data_only=False, keep_vba=has_macro, keep_links=True)
             ws = wb['Sheet1']
 
             fontStyle = Font(size="10")
@@ -125,12 +125,12 @@ class UpdatingThread(QtCore.QThread):
             dir = os.path.dirname(self.external_file_url)
             fname, ext = os.path.splitext(os.path.basename(self.external_file_url))
 
-            # has_macro = False
-            #
-            # if 'xlsm' in ext:
-            #     has_macro = True
+            has_macro = False
 
-            wb = load_workbook(self.external_file_url, keep_vba=False)
+            if 'xlsm' in ext:
+                has_macro = True
+
+            wb = load_workbook(self.external_file_url, read_only=False, data_only=False, keep_vba=has_macro, keep_links=True)
             ws = wb['순위명부']
 
             fontStyle = Font(size="8")
@@ -170,12 +170,12 @@ class UpdatingThread(QtCore.QThread):
             dir = os.path.dirname(self.school_file_url)
             fname, ext = os.path.splitext(os.path.basename(self.school_file_url))
 
-            # has_macro = False
-            #
-            # if 'xlsm' in ext:
-            #     has_macro = True
+            has_macro = False
 
-            wb = load_workbook(self.school_file_url, read_only=False, data_only=True)
+            if 'xlsm' in ext:
+                has_macro = True
+
+            wb = load_workbook(self.school_file_url, read_only=False, data_only=False, keep_vba=has_macro, keep_links=True)
             ws = wb['결충원']
 
             fontStyle = Font(size="8")
