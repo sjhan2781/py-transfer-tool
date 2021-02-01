@@ -228,7 +228,6 @@ class SavingThread(QtCore.QThread):
             i += 1
             row += 1
 
-
         for teacher in self.invited:
             self.counter += 1
             self.set_state_result.emit(self.counter)
@@ -251,7 +250,6 @@ class SavingThread(QtCore.QThread):
             self.set_state_result.emit(self.counter)
             if teacher.disposed is None or '미충원' in teacher.name:
                 continue
-            print('aaaa')
             self.write_to_cell(sheet.cell(row=row, column=1), i, fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=2), '타시군전입', fontStyle, alignment)
             self.write_to_cell(sheet.cell(row=row, column=3), teacher.region, fontStyle, alignment)
@@ -312,6 +310,8 @@ class SavingThread(QtCore.QThread):
             self.make_label_header(sheet, row)
 
             for teacher in self.designation[i]:
+                if teacher.disposed is None:
+                    continue
 
                 self.write_to_cell(sheet.cell(row=row+3, column=1), teacher.disposed.name, fontStyle, alignment)
                 self.write_to_cell(sheet.cell(row=row + 3, column=5), teacher.name, fontStyle, alignment)

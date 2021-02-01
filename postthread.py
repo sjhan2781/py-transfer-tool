@@ -17,6 +17,7 @@ class PostingThread(QtCore.QThread):
     def post(self):
         self.before_post()
         self.post_by_first()
+        self.post_external()
         self.go_to_next.emit()
 
     def before_post(self):
@@ -28,16 +29,24 @@ class PostingThread(QtCore.QThread):
             # 임지지정된 교사
             if teacher.disposed is not None:
                 teacher.disposed = self.schools[self.hash_schools.get(teacher.disposed)-1]
+                self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
+                self.schools[self.hash_schools.get(teacher.disposed.name) - 1].inside += 1
+
             # 임지지정 되지 않은 교사
             else:
                 # 만기나 비정기의 경우 무조건 나가야하기 때문에 미리 결원명단에 추가
                 if '만기' in teacher.type or '비정기' in teacher.type:
                     self.schools[self.hash_schools.get(teacher.school) - 1].gone += 1
 
+    def post_external(self):
         # 관외 전입교사
         for teacher in self.external:
             if teacher.disposed is not None:
-                teacher.disposed = self.schools[self.hash_schools.get(teacher.disposed)-1]
+                teacher.disposed = self.schools[self.hash_schools.get(teacher.disposed) - 1]
+                if '미충원' in teacher.name:
+                    self.schools[self.hash_schools.get(teacher.disposed.name) - 1].term += 1
+                else:
+                    self.schools[self.hash_schools.get(teacher.disposed.name) - 1].outside += 1
 
     def post_by_first(self):
         for teacher in self.internal:

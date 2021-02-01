@@ -299,7 +299,6 @@ class StartController(QObject):
             self.show_msg_box("성공적으로 불러왔습니다.", False)
             wb.close()
 
-
     def get_external_list(self, file_url):
         fname, ext = os.path.splitext(file_url)
 
@@ -345,10 +344,12 @@ class StartController(QObject):
             ws = wb['순위명부']
 
             for row in ws.iter_rows(min_row=3):
-                if row[0].value is None:
-                    break
+                if row[10].value is None:
+                    continue
 
+                # if row[10].value is not None:
                 self.external_list[row[0].value-1].disposed = row[10].value
+                # print(self.external_list[row[0].value-1].disposed)
 
             err_code += 1
 

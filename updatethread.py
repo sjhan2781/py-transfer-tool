@@ -137,7 +137,8 @@ class UpdatingThread(QtCore.QThread):
 
             count = 0
             for i in range(0, self.external.__len__()):
-                if self.external[i].disposed is None or '미충원' in self.external[i].type:
+                # if self.external[i].disposed is None or '미충원' in self.external[i].type:
+                if self.external[i].disposed is None:
                     school_name = ''
                     school_area = ''
                 else:
