@@ -544,7 +544,7 @@ class Ui_WorkingField(object):
         self.stackedWidget.setObjectName("stackedWidget")
         self.verticalLayout.addWidget(self.stackedWidget)
         self.gridLayout.addLayout(self.verticalLayout, 2, 3, 1, 2)
-        self.gridLayout.setColumnStretch(0, 3)
+        self.gridLayout.setColumnStretch(0, 2)
         self.gridLayout.setColumnStretch(2, 1)
         self.gridLayout.setColumnStretch(3, 3)
 

@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>배치</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="3,0,1,3,0">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="2,0,1,3,0">
    <item row="0" column="0" rowspan="4">
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <property name="spacing">
