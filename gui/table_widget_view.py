@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/tableWidget1.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.2
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -13,12 +13,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_WorkingField(object):
     def setupUi(self, WorkingField):
         WorkingField.setObjectName("WorkingField")
-        WorkingField.resize(1280, 694)
+        WorkingField.resize(1280, 690)
         WorkingField.setMouseTracking(True)
         WorkingField.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.horizontalLayout = QtWidgets.QHBoxLayout(WorkingField)
-        self.horizontalLayout.setSpacing(0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.gridLayout = QtWidgets.QGridLayout(WorkingField)
+        self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -241,7 +240,7 @@ class Ui_WorkingField(object):
         self.verticalLayout_4.setStretch(0, 5)
         self.verticalLayout_4.setStretch(1, 2)
         self.verticalLayout_3.addLayout(self.verticalLayout_4)
-        self.horizontalLayout.addLayout(self.verticalLayout_3)
+        self.gridLayout.addLayout(self.verticalLayout_3, 0, 0, 4, 1)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.btn_add = QtWidgets.QPushButton(WorkingField)
@@ -275,10 +274,7 @@ class Ui_WorkingField(object):
         self.btn_del.setFont(font)
         self.btn_del.setObjectName("btn_del")
         self.verticalLayout_2.addWidget(self.btn_del)
-        self.horizontalLayout.addLayout(self.verticalLayout_2)
-        self.verticalLayout_5 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_5.setSpacing(0)
-        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        self.gridLayout.addLayout(self.verticalLayout_2, 0, 1, 3, 1)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setContentsMargins(5, -1, 5, -1)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
@@ -337,7 +333,48 @@ class Ui_WorkingField(object):
         self.label_13.setObjectName("label_13")
         self.horizontalLayout_2.addWidget(self.label_13)
         self.horizontalLayout_2.setStretch(1, 3)
-        self.verticalLayout_5.addLayout(self.horizontalLayout_2)
+        self.gridLayout.addLayout(self.horizontalLayout_2, 0, 3, 1, 2)
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        self.schoolListWidget = QtWidgets.QListWidget(WorkingField)
+        font = QtGui.QFont()
+        font.setFamily("Nanum Gothic")
+        font.setPointSize(18)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.schoolListWidget.setFont(font)
+        self.schoolListWidget.setStyleSheet("QListWidget{\n"
+"    border: 0px;\n"
+"    background-color: rgb(246, 246, 246);\n"
+"    selection-color: rgb(0, 0, 0);\n"
+"     selection-background-color: rgb(220, 220, 220);\n"
+"    font: 18pt \"Nanum Gothic\";\n"
+"}\n"
+"QListWidget:item{\n"
+"    font: 18pt \"맑은 고딕\";\n"
+"}")
+        self.schoolListWidget.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        self.schoolListWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.schoolListWidget.setAlternatingRowColors(True)
+        self.schoolListWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
+        self.schoolListWidget.setResizeMode(QtWidgets.QListView.Adjust)
+        self.schoolListWidget.setObjectName("schoolListWidget")
+        self.verticalLayout_5.addWidget(self.schoolListWidget)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.label_7 = QtWidgets.QLabel(WorkingField)
+        self.label_7.setObjectName("label_7")
+        self.horizontalLayout_3.addWidget(self.label_7)
+        self.label_total_state = QtWidgets.QLabel(WorkingField)
+        self.label_total_state.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_total_state.setObjectName("label_total_state")
+        self.horizontalLayout_3.addWidget(self.label_total_state)
+        self.label_3 = QtWidgets.QLabel(WorkingField)
+        self.label_3.setObjectName("label_3")
+        self.horizontalLayout_3.addWidget(self.label_3)
+        self.verticalLayout_5.addLayout(self.horizontalLayout_3)
+        self.gridLayout.addLayout(self.verticalLayout_5, 1, 2, 2, 1)
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_9.setContentsMargins(30, 5, 5, 0)
         self.horizontalLayout_9.setSpacing(10)
@@ -444,35 +481,7 @@ class Ui_WorkingField(object):
         self.label_11.setFont(font)
         self.label_11.setObjectName("label_11")
         self.horizontalLayout_9.addWidget(self.label_11)
-        self.verticalLayout_5.addLayout(self.horizontalLayout_9)
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_3.setSpacing(0)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.schoolListWidget = QtWidgets.QListWidget(WorkingField)
-        font = QtGui.QFont()
-        font.setFamily("Nanum Gothic")
-        font.setPointSize(18)
-        font.setBold(False)
-        font.setItalic(False)
-        font.setWeight(50)
-        self.schoolListWidget.setFont(font)
-        self.schoolListWidget.setStyleSheet("QListWidget{\n"
-"    border: 0px;\n"
-"    background-color: rgb(246, 246, 246);\n"
-"    selection-color: rgb(0, 0, 0);\n"
-"     selection-background-color: rgb(220, 220, 220);\n"
-"    font: 18pt \"Nanum Gothic\";\n"
-"}\n"
-"QListWidget:item{\n"
-"    font: 18pt \"맑은 고딕\";\n"
-"}")
-        self.schoolListWidget.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-        self.schoolListWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        self.schoolListWidget.setAlternatingRowColors(True)
-        self.schoolListWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
-        self.schoolListWidget.setResizeMode(QtWidgets.QListView.Adjust)
-        self.schoolListWidget.setObjectName("schoolListWidget")
-        self.horizontalLayout_3.addWidget(self.schoolListWidget)
+        self.gridLayout.addLayout(self.horizontalLayout_9, 1, 3, 1, 2)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setContentsMargins(10, -1, 10, -1)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -484,10 +493,7 @@ class Ui_WorkingField(object):
         self.stackedWidget.setSizePolicy(sizePolicy)
         self.stackedWidget.setObjectName("stackedWidget")
         self.verticalLayout.addWidget(self.stackedWidget)
-        self.horizontalLayout_3.addLayout(self.verticalLayout)
-        self.horizontalLayout_3.setStretch(0, 1)
-        self.horizontalLayout_3.setStretch(1, 4)
-        self.verticalLayout_5.addLayout(self.horizontalLayout_3)
+        self.gridLayout.addLayout(self.verticalLayout, 2, 4, 1, 1)
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setContentsMargins(-1, 0, -1, -1)
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
@@ -536,17 +542,12 @@ class Ui_WorkingField(object):
         self.button_save_result.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.button_save_result.setObjectName("button_save_result")
         self.horizontalLayout_6.addWidget(self.button_save_result)
-        self.verticalLayout_5.addLayout(self.horizontalLayout_6)
-        self.horizontalLayout.addLayout(self.verticalLayout_5)
-        self.horizontalLayout.setStretch(0, 2)
-        self.horizontalLayout.setStretch(2, 4)
+        self.gridLayout.addLayout(self.horizontalLayout_6, 3, 2, 1, 3)
 
         self.retranslateUi(WorkingField)
         self.unspecified_tabWidget.setCurrentIndex(1)
         self.btn_add.clicked.connect(WorkingField.add)
         self.btn_del.clicked.connect(WorkingField.delete)
-        self.schoolListWidget.currentRowChanged['int'].connect(WorkingField.tabChanged)
-        self.schoolListWidget.currentRowChanged['int'].connect(self.stackedWidget.setCurrentIndex)
         self.button_update.clicked.connect(WorkingField.update_file)
         self.button_save_result.clicked.connect(WorkingField.save)
         self.button_exit.clicked.connect(WorkingField.show_dialog_exit)
@@ -556,6 +557,8 @@ class Ui_WorkingField(object):
         self.tableWidget_external.currentCellChanged['int','int','int','int'].connect(WorkingField.teacherInfoChanged)
         self.tableWidget_internal.currentCellChanged['int','int','int','int'].connect(WorkingField.teacherInfoChanged)
         self.btn_add_term.clicked.connect(WorkingField.add_temp)
+        self.schoolListWidget.currentRowChanged['int'].connect(WorkingField.tabChanged)
+        self.schoolListWidget.currentRowChanged['int'].connect(self.stackedWidget.setCurrentIndex)
         QtCore.QMetaObject.connectSlotsByName(WorkingField)
 
     def retranslateUi(self, WorkingField):
@@ -645,6 +648,9 @@ class Ui_WorkingField(object):
         self.label_12.setText(_translate("WorkingField", "결원 : "))
         self.label_state.setText(_translate("WorkingField", "0"))
         self.label_13.setText(_translate("WorkingField", "명"))
+        self.label_7.setText(_translate("WorkingField", "총 결원:"))
+        self.label_total_state.setText(_translate("WorkingField", "0"))
+        self.label_3.setText(_translate("WorkingField", "명"))
         self.label_4.setText(_translate("WorkingField", "관내 전보 :"))
         self.label_inside.setText(_translate("WorkingField", "0"))
         self.label_5.setText(_translate("WorkingField", "명"))

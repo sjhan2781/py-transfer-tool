@@ -52,7 +52,7 @@ class PostingThread(QtCore.QThread):
                     teacher.disposed = self.schools[desired_school_num]
                     self.schools[desired_school_num].inside += 1
 
-                    if '일반' in teacher.type or '초빙' in teacher.type:
+                    if '만기' not in teacher.type and '비정기' not in teacher.type:
                         self.schools[pre_school_num].gone += 1
 
                     self.post_by_first()

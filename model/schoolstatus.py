@@ -7,6 +7,7 @@ class SchoolStatus:
         self.num = num
         self.name = name
         # self.status = status.value
+        self.outside_visited
         self.status = NoneChecker.check_valid(self, status)
         self.inside = NoneChecker.check_valid(self, inside)
         self.outside = NoneChecker.check_valid(self, outside)

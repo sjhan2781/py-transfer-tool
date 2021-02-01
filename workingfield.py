@@ -23,9 +23,11 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
         self.vacancy = kwargs['vacancy']
         self.recruit = kwargs['recruit']
         self.total_term = 0
+        self.total_state = 0
 
         for school in self.schools:
             self.total_term += school.term
+            self.total_state += school.get_state()
 
         # self = uic.loadUi("tableWidget", self)
         self.setupUi(self)
@@ -85,6 +87,7 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
                 teacher.disposed = self.schools[selected_tab]
                 tableWidget.removeRow(selected_row)
                 cur_widget.add_move_in_item(teacher)
+                self.total_state += 1
                 tableWidget.clearSelection()
 
         self.tabChanged(selected_tab)
@@ -115,6 +118,7 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
                 self.tabChanged(self.hash_schools.get(teacher.school) - 1)
 
             teacher.disposed = None
+            self.total_state -= 1
             cur_widget.clearSelection()
             self.tabChanged(selected_tab)
 
@@ -143,6 +147,7 @@ class WorkingField(gui.table_widget_view.Ui_WorkingField, QtWidgets.QWidget):
         self.label_term.setText('%d' % self.schools[index].term)
         self.label_state.setText('%d' % self.schools[index].status)
         self.label_total_term.setText('%d' % self.total_term)
+        self.label_total_state.setText('%d' % self.total_state)
         self.repaint()
 
     @pyqtSlot(int, )
