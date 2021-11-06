@@ -361,6 +361,8 @@ class SavingThread(QtCore.QThread):
 
                 self.write_to_cell(sheet.cell(row=row + 3, column=13), teacher.school, fontStyle, alignment)
                 self.write_to_cell(sheet.cell(row=row + 3, column=14), teacher.name, fontStyle, alignment)
+                row += 1
+            row = i * PAGE_BREAK
 
     def make_label_header(self, sheet, row):
         fontStyle = Font(size="11")
